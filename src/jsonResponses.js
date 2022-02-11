@@ -17,8 +17,7 @@ const respondJSONMeta = (request, response, status) => {
 };
 
 const getFractalInfo = (request, response) => {
-  const responseJSON = JSON.stringify(fractalInfo);
-
+  const responseJSON = fractalInfo;
   respondJSON(request, response, 200, responseJSON);
 };
 
