@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fractal Generator</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+        <link rel="stylesheet" href="styles/style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <!-- <link rel="icon" type="image/x-icon" href="images/favicon.png"> -->
+        <script src="src/colorselect.js" type="module"></script>
+        <script src="src/app.js" type="module"></script>
+    </head>
+    <body class="has-navbar-fixed-top">
+        <nav-bar></nav-bar>
+        <section class="section pb-0 pt-5">
+            <div class="columns is-mobile">
+                <div id="canvas-column" class="column is-6 p-0">
+                    <canvas id="control-canvas"></canvas>
+                    <canvas id="pattern-canvas"></canvas>
+                </div>
+                <div class="column p-0 mt-3">
+                    <label class="label mb-3">Fractal to Draw:</label>
+                    <div class="select mb-6">
+                        <select id="fractal-select">
+                            <option value="Sierpinski Triangle" selected>Sierpinski Triangle</option>
+                            <option value="Tic Tac Toe Square">Tic Tac Toe Square</option>
+                            <option value="Ninja Star Square">Ninja Star Square</option>
+                            <option value="Leaf Square">Leaf Square</option>
+                            <option value="T Square">T Square</option>
+                            <option value="Snowflake Pentagon">Snowflake Pentagon</option>
+                            <option value="Star Pentagon">Star Pentagon</option>
+                            <option value="Custom Fractal">Custom Fractal</option>
+                        </select>
+                    </div>
+                    <label class="label mb-3">Drawing Speed:</label>
+                    <div class="select mb-6">
+                        <select id="speed-select">
+                            <option value="1">Crawl</option>
+                            <option value="10">Slow</option>
+                            <option value="100" selected>Medium</option>
+                            <option value="1000">Fast</option>
+                        </select>
+                    </div>
+                    <label class="label mb-3">Dot Size:</label>
+                    <div class="select mb-6">
+                        <select id="size-select">
+                            <option value="1" selected>Small</option>
+                            <option value="5">Medium</option>
+                            <option value="10">Large</option>
+                        </select>
+                    </div>
+                    <div id="color-selects" class="field columns mb-6"></div>
+                </div>
+                <div class="column is-4">
+                    <label class="label mb-3">Number of Vertices:</label>
+                    <div class="select mb-6">
+                        <select id="side-num-select">
+                            <option value="3" selected>Three</option>
+                            <option value="4">Four</option>
+                            <option value="5">Five</option>
+                        </select>
+                    </div>
+                    <label class="label mb-3">Jump Distance:</label>
+                    <input id="distance-text" class="input mb-3" type="text" value=""/>
+                    <input id="distance-range" class="mb-6" type="range" min="10" max="90" value="50"/>
+                    <div class="columns is-multiline is-centered buttons are-medium">
+                        <div class="column is-one-half">
+                            <button id="pause-button" class="button is-fullwidth is-link is-light mb-3">Begin Drawing</button>
+                            <button id="erase-pattern-button" class="button is-fullwidth is-warning is-light">Erase Fractal</button>
+                        </div>
+                        <div class="column is-one-half">
+                            <button id="toggle-control-button" class="button is-fullwidth is-link is-light mb-3">Hide Control Points</button>
+                            <button id="reset-control-button" class="button is-fullwidth is-warning is-light">Reset Control Points</button>
+                        </div>
+                        <div class="column is-narrow">
+                            <button id="reset-button" class="button is-fullwidth is-large is-danger is-light">Reset Canvas</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <fractal-footer></fractal-footer>
+    </body>
+</html>
