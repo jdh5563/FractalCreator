@@ -11,7 +11,8 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 // Calls different functions depending on what was requested
 const urlStruct = {
   '/': htmlHandler.getIndex,
-  '/styles/style.css': cssHandler.getStyle,
+  '/styles/style.css': cssHandler.getGlobalStyle,
+  '/styles/app.css': cssHandler.getAppStyle,
   '/src/app.js': jsHandler.getApp,
   '/src/colorselect.js': jsHandler.getColorSelect,
   '/src/utilities.js': jsHandler.getUtils,

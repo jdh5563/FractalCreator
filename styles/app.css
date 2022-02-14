@@ -1,0 +1,47 @@
+canvas {
+    border: 1px solid black;
+    position: absolute;
+    top: 5rem;
+    left: 0.75rem;
+}
+
+#pattern-canvas{
+    z-index: 0;
+}
+
+#control-canvas{
+    z-index: 1;
+}
+
+#distance-range {
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;  
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+  
+  /* Mouse-over effects */
+#distance-range:hover {
+    opacity: 1;
+}
+  
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+#distance-range::-webkit-slider-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    background: #04AA6D;
+    cursor: pointer;
+}
+  
+#distance-range::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+}

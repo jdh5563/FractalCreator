@@ -163,7 +163,6 @@ function resetControlPoints(json) {
   let fractal;
   let pointOffsets;
   if (fractalSelect.value != 'Custom Fractal') {
-    console.log(json);
     shape = fractalSelect.value.split(' ');
     fractal = json[shape[shape.length - 1]];
     pointOffsets = fractal.pointOffsets;
@@ -197,8 +196,7 @@ function resetControlPoints(json) {
         break;
     }
   }
-
-  if (fractalSelect.value === 'Custom Fractal') {
+  else {
     switch (numSideSelect.value) {
       case '3':
         points = [
