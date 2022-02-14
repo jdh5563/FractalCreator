@@ -5,12 +5,14 @@ const htmlHandler = require('./htmlResponses.js');
 const cssHandler = require('./cssResponses.js');
 const jsHandler = require('./jsResponses.js');
 const jsonHandler = require('./jsonResponses.js');
+const imageHandler = require('./imageResponses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 // Calls different functions depending on what was requested
 const urlStruct = {
   '/': htmlHandler.getIndex,
+  'images/favicon.png': imageHandler.getFavicon,
   '/styles/style.css': cssHandler.getGlobalStyle,
   '/styles/app.css': cssHandler.getAppStyle,
   '/src/app.js': jsHandler.getApp,
