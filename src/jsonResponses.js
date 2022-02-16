@@ -9,13 +9,6 @@ const respondJSON = (request, response, status, object) => {
   response.end();
 };
 
-// function to respond without json body
-// takes request, response and status code
-const respondJSONMeta = (request, response, status) => {
-  response.writeHead(status, { 'Content-Type': 'application/json' });
-  response.end();
-};
-
 const getFractalInfo = (request, response) => {
   const responseJSON = JSON.parse(fractalInfo);
   respondJSON(request, response, 200, responseJSON);
