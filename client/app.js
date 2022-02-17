@@ -195,8 +195,7 @@ function resetControlPoints(json) {
         ];
         break;
     }
-  }
-  else {
+  } else {
     switch (numSideSelect.value) {
       case '3':
         points = [

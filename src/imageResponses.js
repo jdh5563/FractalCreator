@@ -11,5 +11,5 @@ const getFavicon = (request, response) => {
 };
 
 module.exports = {
-  getFavicon
-}
+  getFavicon,
+};
