@@ -1,5 +1,7 @@
 import { loadFile } from './utilities.js';
 
+let fractalInfo;
+
 const canvasWidth = document.querySelector('#canvas-column').offsetWidth * 0.95;
 const canvasHeight = canvasWidth * 0.75;
 
@@ -34,8 +36,8 @@ document.querySelector('#toggle-control-button').onclick = (e) => {
     drawControlPoints();
   }
 };
-document.querySelector('#reset-button').onclick = () => loadFile('fractalinfo.json', init);
-document.querySelector('#reset-control-button').onclick = resetControlPoints;
+document.querySelector('#reset-button').onclick = () => init(fractalInfo);
+document.querySelector('#reset-control-button').onclick = () => resetControlPoints(fractalInfo);
 document.querySelector('#erase-pattern-button').onclick = () => {
   patternCtx.save();
   patternCtx.fillStyle = 'black';
@@ -68,7 +70,7 @@ distanceText.onchange = (e) => jumpDistance = 1 / e.target.value;
 distanceRange.onchange = () => jumpDistance = 1 / distanceText.value;
 
 const fractalSelect = document.querySelector('#fractal-select');
-fractalSelect.onchange = () => loadFile('fractalinfo.json', init);
+fractalSelect.onchange = () => init(fractalInfo);
 
 const speedSelect = document.querySelector('#speed-select');
 speedSelect.onchange = () => jumpsPerFrame = speedSelect.value;
@@ -80,7 +82,7 @@ const numSideSelect = document.querySelector('#side-num-select');
 numSideSelect.onchange = () => {
   fractalSelect.value = 'Custom Fractal';
 
-  loadFile('fractalinfo.json', init);
+  init(fractalInfo);
 };
 
 const colorSelects = document.querySelector('#color-selects');
@@ -103,6 +105,8 @@ function init(json) {
   tracePoint = { x: tracePointOriginal.x, y: tracePointOriginal.y };
 
   dotSize = sizeSelect.value;
+
+  fractalInfo = json;
 
   resetControlPoints(json);
 

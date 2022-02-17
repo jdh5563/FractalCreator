@@ -1,9 +1,9 @@
 const fs = require('fs');
 
 // The JS file
-const js = fs.readFileSync(`${__dirname}/../src/app.js`);
-const app = fs.readFileSync(`${__dirname}/../src/colorselect.js`);
-const utils = fs.readFileSync(`${__dirname}/../src/utilities.js`);
+const js = fs.readFileSync(`${__dirname}/../client/app.js`);
+const app = fs.readFileSync(`${__dirname}/../client/colorselect.js`);
+const utils = fs.readFileSync(`${__dirname}/../client/utilities.js`);
 
 // Writes the javascript into the response
 const getApp = (request, response) => {

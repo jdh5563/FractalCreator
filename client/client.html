@@ -68,6 +68,33 @@
                     <label class="label mb-3">Jump Distance:</label>
                     <input id="distance-text" class="input mb-3" type="text" value=""/>
                     <input id="distance-range" class="mb-6" type="range" min="10" max="90" value="50"/>
+                    <label class="label mb-3">Optional Fractal Rules:</label>
+                    <div class="mb-6">
+                        <label class="checkbox mb-3">
+                            <input type="checkbox">
+                            The center can also be a vertex
+                        </label>
+                        <label class="checkbox mb-3">
+                            <input type="checkbox">
+                            The midpoints of each edge can also be vertices
+                        </label>
+                        <label class="checkbox mb-3">
+                            <input type="checkbox">
+                            Can't choose the same vertex twice in a row
+                        </label>
+                        <label class="checkbox mb-3">
+                            <input type="checkbox">
+                            Next vertex must be more than one edge away from the previous vertex
+                        </label>
+                        <label class="checkbox mb-3">
+                            <input type="checkbox">
+                            Next vertex must be more than two edges away from the previous vertex
+                        </label>
+                        <label class="checkbox mb-3">
+                            <input type="checkbox">
+                            Next vertex must be more than one edge away from the previous vertex if the previous two vertices are the same
+                        </label>
+                    </div>
                     <div class="columns is-multiline is-centered buttons are-medium">
                         <div class="column is-one-half">
                             <button id="pause-button" class="button is-fullwidth is-link is-light mb-3">Begin Drawing</button>
