@@ -69,6 +69,8 @@ distanceRange.oninput = (e) => distanceText.value = e.target.value / 100;
 distanceText.onchange = (e) => jumpDistance = 1 / e.target.value;
 distanceRange.onchange = () => jumpDistance = 1 / distanceText.value;
 
+const fractalOptionalRules = document.querySelector('#fractal-optional-rules');
+
 const fractalSelect = document.querySelector('#fractal-select');
 fractalSelect.onchange = () => init(fractalInfo);
 
@@ -445,6 +447,13 @@ function squareWithT() {
 // #region Custom Fractals
 function customFractal() {
   animationRequestID = requestAnimationFrame(customFractal);
+
+  // TODO: Add functionality for all optional rules
+  for(let checkbox of fractalOptionalRules.children){
+    if(checkbox.checked){
+      // Do stuff
+    }
+  }
 
   let randomVertex;
   for (let i = 0; i < jumpsPerFrame; i++) {
