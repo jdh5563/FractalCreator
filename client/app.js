@@ -536,7 +536,15 @@ function customFractal() {
       }
     }
 
-    draw(randomVertex);
+    if(canDraw){
+      draw(randomVertex);
+      
+      previousVertices.unshift(randomVertex);
+
+      if (previousVertices.length == 3) {
+        previousVertices.pop();
+      }
+    }
   }
 }
 // #endregion
