@@ -111,16 +111,7 @@ function init(json) {
   fractalInfo = json;
 
   resetControlPoints(json);
-
-  colorSelects.replaceChildren();
-  for (let i = 0; i < points.length; i++) {
-    if (i % 3 == 0) {
-      const div = document.createElement('div');
-      div.classList.add('column', 'py-0');
-      colorSelects.appendChild(div);
-    }
-    colorSelects.children[colorSelects.children.length - 1].appendChild(document.createElement('color-select'));
-  }
+  resetColorList();
 
   distanceText.value = 1 / jumpDistance;
   distanceRange.value = distanceText.value * 100;
@@ -256,7 +247,7 @@ function drawControlPoints() {
   controlCtx.beginPath();
   controlCtx.save();
   controlCtx.strokeStyle = 'white';
-  if(points.length == parseInt(numSideSelect.value) + 1 || points.length == parseInt(numSideSelect.value) * 2 + 1){
+  if(fractalSelect.value == 'Custom Fractal' && (points.length == parseInt(numSideSelect.value) + 1 || points.length == parseInt(numSideSelect.value) * 2 + 1)){
     controlCtx.moveTo(points[points.length - 2].x, points[points.length - 2].y);
     for(let i = 0; i < points.length - 1; i++){
       controlCtx.lineTo(points[i].x, points[i].y);
@@ -334,6 +325,18 @@ function calculatePolygonCentroid() {
   }
   centerPoint.x = centroidX / points.length;
   centerPoint.y = centroidY / points.length;
+}
+
+function resetColorList(){
+  colorSelects.replaceChildren();
+  for (let i = 0; i < points.length; i++) {
+    if (i % 3 == 0) {
+      const div = document.createElement('div');
+      div.classList.add('column', 'py-0');
+      colorSelects.appendChild(div);
+    }
+    colorSelects.children[colorSelects.children.length - 1].appendChild(document.createElement('color-select'));
+  }
 }
 
 // #region 1/2 jump fractals
@@ -472,7 +475,10 @@ function customFractal() {
       if(checkbox.firstElementChild.checked){
         switch(checkbox.firstElementChild.id){
           case "center-vertex":
-            if(points.length == parseInt(numSideSelect.value) || points.length == parseInt(numSideSelect.value) * 2) points.push(centerPoint);
+            if(points.length == parseInt(numSideSelect.value) || points.length == parseInt(numSideSelect.value) * 2){
+              points.push(centerPoint);
+              resetColorList();
+            }
             break;
           case "midpoint-vertex":
             if(points.length == parseInt(numSideSelect.value) || points.length == parseInt(numSideSelect.value) + 1){
@@ -480,6 +486,8 @@ function customFractal() {
               for(let j = 1; j < points.length + 1; j += 2){
                 points.splice(j, 0, { x: (points[j - 1].x + points[j % points.length].x) / 2, y: (points[j - 1].y + points[j % points.length].y) / 2 });
               }
+
+              resetColorList();
 
               if(center) points.push(center);
             }
@@ -506,13 +514,18 @@ function customFractal() {
       else{
         switch(checkbox.firstElementChild.id){
           case "center-vertex":
-            if(points.length === parseInt(numSideSelect.value) + 1 || points.length == parseInt(numSideSelect.value) * 2 + 1) points.pop();
+            if(points.length === parseInt(numSideSelect.value) + 1 || points.length == parseInt(numSideSelect.value) * 2 + 1){
+              points.pop();
+              resetColorList();
+            }
             break;
           case "midpoint-vertex":
             if(points.length == parseInt(numSideSelect.value) * 2 || points.length == parseInt(numSideSelect.value) * 2 + 1){
               for(let j = 1; j < points.length; j++){
                 points.splice(j, 1);
               }
+
+              resetColorList();
 
               // Redraw the control points without the midpoints
               controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
