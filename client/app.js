@@ -60,6 +60,9 @@ let animationRequestID;
 
 let isControlHidden = false;
 
+let centerIsVertex = false;
+let midpointsAreVertices = false;
+
 const distanceText = document.querySelector('#distance-text');
 const distanceRange = document.querySelector('#distance-range');
 
@@ -159,12 +162,14 @@ function resetControlPoints(json) {
   let shape;
   let fractal;
   let pointOffsets;
+  
+  jumpsPerFrame = speedSelect.value;
+
   if (fractalSelect.value != 'Custom Fractal') {
     shape = fractalSelect.value.split(' ');
     fractal = json[shape[shape.length - 1]];
     pointOffsets = fractal.pointOffsets;
     jumpDistance = fractal.jumpDistance;
-    jumpsPerFrame = speedSelect.value;
 
     switch (pointOffsets.length) {
       case 3:
@@ -228,6 +233,18 @@ function resetControlPoints(json) {
   centerPoint = { x: canvasWidth / 2, y: canvasHeight / 2 };
   calculatePolygonCentroid();
   drawControlPoints();
+}
+
+function resetColorList(){
+  colorSelects.replaceChildren();
+  for (let i = 0; i < points.length; i++) {
+    if (i % 6 == 0) {
+      const div = document.createElement('div');
+      div.classList.add('column', 'py-0');
+      colorSelects.appendChild(div);
+    }
+    colorSelects.children[colorSelects.children.length - 1].appendChild(document.createElement('color-select'));
+  }
 }
 
 function drawControlPoints() {
@@ -325,18 +342,6 @@ function calculatePolygonCentroid() {
   }
   centerPoint.x = centroidX / points.length;
   centerPoint.y = centroidY / points.length;
-}
-
-function resetColorList(){
-  colorSelects.replaceChildren();
-  for (let i = 0; i < points.length; i++) {
-    if (i % 6 == 0) {
-      const div = document.createElement('div');
-      div.classList.add('column', 'py-0');
-      colorSelects.appendChild(div);
-    }
-    colorSelects.children[colorSelects.children.length - 1].appendChild(document.createElement('color-select'));
-  }
 }
 
 // #region 1/2 jump fractals
@@ -468,6 +473,7 @@ function customFractal() {
   let rightNeighbor;
   let leftNeighbor;
 
+  // TODO: This needs to be optimized A LOT
   for (let i = 0; i < jumpsPerFrame; i++) {
     randomVertex = Math.floor(Math.random() * points.length);
 
@@ -475,21 +481,23 @@ function customFractal() {
       if(checkbox.firstElementChild.checked){
         switch(checkbox.firstElementChild.id){
           case "center-vertex":
-            if(points.length == parseInt(numSideSelect.value) || points.length == parseInt(numSideSelect.value) * 2){
+            if(!centerIsVertex){
+              centerIsVertex = true;
               points.push(centerPoint);
               resetColorList();
             }
             break;
           case "midpoint-vertex":
-            if(points.length == parseInt(numSideSelect.value) || points.length == parseInt(numSideSelect.value) + 1){
-              const center = points.length == parseInt(numSideSelect.value) + 1 ? points.pop() : null;
+            if(!midpointsAreVertices){
+              midpointsAreVertices = true;
+              const center = centerIsVertex ? points.pop() : null;
               for(let j = 1; j < points.length + 1; j += 2){
                 points.splice(j, 0, { x: (points[j - 1].x + points[j % points.length].x) / 2, y: (points[j - 1].y + points[j % points.length].y) / 2 });
               }
 
-              resetColorList();
-
               if(center) points.push(center);
+
+              resetColorList();
             }
             break;
           case "no-same-twice":
@@ -498,8 +506,17 @@ function customFractal() {
             }
             break;
           case "no-distance-one":
+            rightNeighbor = (randomVertex - 1) % points.length;
+            leftNeighbor = (randomVertex + 1) % points.length;
+
+            if(randomVertex === leftNeighbor || randomVertex === rightNeighbor){
+              canDraw = false;
+            }
             break;
           case "no-distance-two":
+            if(centerIsVertex){
+
+            }
             break;
           case "no-distance-three":
             break;
@@ -514,13 +531,15 @@ function customFractal() {
       else{
         switch(checkbox.firstElementChild.id){
           case "center-vertex":
-            if(points.length === parseInt(numSideSelect.value) + 1 || points.length == parseInt(numSideSelect.value) * 2 + 1){
+            if(centerIsVertex){
+              centerIsVertex = false;
               points.pop();
               resetColorList();
             }
             break;
           case "midpoint-vertex":
-            if(points.length == parseInt(numSideSelect.value) * 2 || points.length == parseInt(numSideSelect.value) * 2 + 1){
+            if(midpointsAreVertices){
+              midpointsAreVertices = false;
               for(let j = 1; j < points.length; j++){
                 points.splice(j, 1);
               }
@@ -538,7 +557,7 @@ function customFractal() {
 
     if(canDraw){
       draw(randomVertex);
-      
+
       previousVertices.unshift(randomVertex);
 
       if (previousVertices.length == 3) {
