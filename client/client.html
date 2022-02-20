@@ -71,28 +71,40 @@
                     <label class="label mb-3">Optional Fractal Rules:</label>
                     <div id="fractal-optional-rules" class="mb-6">
                         <label class="checkbox mb-3">
-                            <input type="checkbox">
+                            <input id="center-vertex" type="checkbox">
                             The center can also be a vertex
                         </label>
                         <label class="checkbox mb-3">
-                            <input type="checkbox">
+                            <input id="midpoint-vertex" type="checkbox">
                             The midpoints of each edge can also be vertices
                         </label>
                         <label class="checkbox mb-3">
-                            <input type="checkbox">
+                            <input id="no-same-twice" type="checkbox">
                             Can't choose the same vertex twice in a row
                         </label>
                         <label class="checkbox mb-3">
-                            <input type="checkbox">
-                            Next vertex must be more than one edge away from the previous vertex
+                            <input id="no-distance-one" type="checkbox">
+                            Next vertex can't neighbor the previous vertex
                         </label>
                         <label class="checkbox mb-3">
-                            <input type="checkbox">
-                            Next vertex must be more than two edges away from the previous vertex
+                            <input id="no-distance-two" type="checkbox">
+                            Next vertex can't be exactly two places away from the previous vertex
                         </label>
                         <label class="checkbox mb-3">
-                            <input type="checkbox">
-                            Next vertex must be more than one edge away from the previous vertex if the previous two vertices are the same
+                            <input id="no-distance-three" type="checkbox">
+                            Next vertex can't be exactly three places away from the previous vertex
+                        </label>
+                        <label class="checkbox mb-3">
+                            <input id="same-twice-no-one" type="checkbox">
+                            Next vertex can't neighbor the previous vertex if the previous two vertices are the same
+                        </label>
+                        <label class="checkbox mb-3">
+                            <input id="same-twice-no-two" type="checkbox">
+                            Next vertex can't be exactly two places away from the previous vertex if the previous two vertices are the same
+                        </label>
+                        <label class="checkbox mb-3">
+                            <input id="same-twice-no-three" type="checkbox">
+                            Next vertex can't be exactly three places away from the previous vertex if the previous two vertices are the same
                         </label>
                     </div>
                     <div class="columns is-multiline is-centered buttons are-medium">

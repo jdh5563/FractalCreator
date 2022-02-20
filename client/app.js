@@ -69,7 +69,7 @@ distanceRange.oninput = (e) => distanceText.value = e.target.value / 100;
 distanceText.onchange = (e) => jumpDistance = 1 / e.target.value;
 distanceRange.onchange = () => jumpDistance = 1 / distanceText.value;
 
-const fractalOptionalRules = document.querySelector('#fractal-optional-rules');
+const fractalOptionalRules = document.querySelector('#fractal-optional-rules').children;
 
 const fractalSelect = document.querySelector('#fractal-select');
 fractalSelect.onchange = () => init(fractalInfo);
@@ -158,9 +158,9 @@ function draw(randomVertex) {
     patternCtx.fill();
     patternCtx.closePath();
     patternCtx.restore();
-
-    if (!isControlHidden) drawControlPoints();
   }
+
+  if (!isControlHidden) drawControlPoints();
 }
 
 function resetControlPoints(json) {
@@ -255,15 +255,24 @@ function drawControlPoints() {
   // Draw lines between each attractor to outline the shape
   controlCtx.beginPath();
   controlCtx.save();
-  controlCtx.moveTo(points[points.length - 1].x, points[points.length - 1].y);
   controlCtx.strokeStyle = 'white';
-  for (const point of points) {
-    controlCtx.lineTo(point.x, point.y);
+  if(points.length == parseInt(numSideSelect.value) + 1 || points.length == parseInt(numSideSelect.value) * 2 + 1){
+    controlCtx.moveTo(points[points.length - 2].x, points[points.length - 2].y);
+    for(let i = 0; i < points.length - 1; i++){
+      controlCtx.lineTo(points[i].x, points[i].y);
+    }
+  }
+  else{
+    controlCtx.moveTo(points[points.length - 1].x, points[points.length - 1].y);
+    for (const point of points) {
+      controlCtx.lineTo(point.x, point.y);
+    }
   }
   controlCtx.stroke();
   controlCtx.restore();
   controlCtx.closePath();
 
+  // Draw the centroid
   controlCtx.beginPath();
   controlCtx.save();
   controlCtx.translate(centerPoint.x, centerPoint.y);
@@ -449,15 +458,70 @@ function customFractal() {
   animationRequestID = requestAnimationFrame(customFractal);
 
   // TODO: Add functionality for all optional rules
-  for(let checkbox of fractalOptionalRules.children){
-    if(checkbox.checked){
-      // Do stuff
-    }
-  }
 
+  const previousVertices = [];
+  let canDraw = true;
   let randomVertex;
+  let rightNeighbor;
+  let leftNeighbor;
+
   for (let i = 0; i < jumpsPerFrame; i++) {
     randomVertex = Math.floor(Math.random() * points.length);
+
+    for(let checkbox of fractalOptionalRules){
+      if(checkbox.firstElementChild.checked){
+        switch(checkbox.firstElementChild.id){
+          case "center-vertex":
+            if(points.length == parseInt(numSideSelect.value) || points.length == parseInt(numSideSelect.value) * 2) points.push(centerPoint);
+            break;
+          case "midpoint-vertex":
+            if(points.length == parseInt(numSideSelect.value) || points.length == parseInt(numSideSelect.value) + 1){
+              const center = points.length == parseInt(numSideSelect.value) + 1 ? points.pop() : null;
+              for(let j = 1; j < points.length + 1; j += 2){
+                points.splice(j, 0, { x: (points[j - 1].x + points[j % points.length].x) / 2, y: (points[j - 1].y + points[j % points.length].y) / 2 });
+              }
+
+              if(center) points.push(center);
+            }
+            break;
+          case "no-same-twice":
+            if(randomVertex == previousVertices[0]){
+              canDraw = false;
+            }
+            break;
+          case "no-distance-one":
+            break;
+          case "no-distance-two":
+            break;
+          case "no-distance-three":
+            break;
+          case "same-twice-no-one":
+            break;
+          case "same-twice-no-two":
+            break;
+          case "same-twice-no-three":
+            break;
+        }
+      }
+      else{
+        switch(checkbox.firstElementChild.id){
+          case "center-vertex":
+            if(points.length === parseInt(numSideSelect.value) + 1 || points.length == parseInt(numSideSelect.value) * 2 + 1) points.pop();
+            break;
+          case "midpoint-vertex":
+            if(points.length == parseInt(numSideSelect.value) * 2 || points.length == parseInt(numSideSelect.value) * 2 + 1){
+              for(let j = 1; j < points.length; j++){
+                points.splice(j, 1);
+              }
+
+              // Redraw the control points without the midpoints
+              controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+              drawControlPoints();
+            }
+            break;
+        }
+      }
+    }
 
     draw(randomVertex);
   }
