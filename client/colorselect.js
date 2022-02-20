@@ -14,6 +14,7 @@ template.innerHTML = `
         <option value="rgb(255, 105, 180)">Pink</option>
         <option value="rgb(75, 0, 130)">Indigo</option>
         <option value="rgb(139, 69, 19)">Brown</option>
+        <option value="rgb(156, 175, 136)">Sage</option>
     </select>
 </div>
 `;
@@ -34,7 +35,7 @@ class ColorSelect extends HTMLElement {
   connectedCallback() {
     const columnChildren = Array.from(this.parentElement.children);
     const rootChildren = Array.from(this.parentElement.parentElement.children);
-    const index = columnChildren.indexOf(this) + 3 * rootChildren.indexOf(this.parentElement);
+    const index = columnChildren.indexOf(this) + 6 * rootChildren.indexOf(this.parentElement);
 
     this.label.textContent += `${index + 1}:`;
     this.select.children[index].selected = true;

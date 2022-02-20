@@ -139,8 +139,8 @@ function draw(randomVertex) {
     patternCtx.save();
     patternCtx.globalAlpha = 0.1 * dotSize;
     patternCtx.fillStyle = colorSelects
-      .children[Math.floor(randomVertex / 3)]
-      .children[randomVertex % 3]
+      .children[Math.floor(randomVertex / 6)]
+      .children[randomVertex % 6]
       .shadowRoot.querySelector('select').value;
 
     patternCtx.beginPath();
@@ -330,7 +330,7 @@ function calculatePolygonCentroid() {
 function resetColorList(){
   colorSelects.replaceChildren();
   for (let i = 0; i < points.length; i++) {
-    if (i % 3 == 0) {
+    if (i % 6 == 0) {
       const div = document.createElement('div');
       div.classList.add('column', 'py-0');
       colorSelects.appendChild(div);
