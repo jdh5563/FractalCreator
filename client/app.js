@@ -45,7 +45,7 @@ document.querySelector('#erase-pattern-button').onclick = () => {
   patternCtx.restore();
 };
 
-const previousVertices = [];
+let previousVertices = [];
 let points;
 let centerPoint = { x: canvasWidth / 2, y: canvasHeight / 2 };
 let tracePointOriginal;
@@ -495,7 +495,7 @@ function customFractal() {
 
   // TODO: Add functionality for all optional rules
 
-  previousVertices.clear();
+  previousVertices = [];
   let canDraw = true;
   let randomVertex;
   let rightNeighbor;
