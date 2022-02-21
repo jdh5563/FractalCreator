@@ -45,6 +45,7 @@ document.querySelector('#erase-pattern-button').onclick = () => {
   patternCtx.restore();
 };
 
+const previousVertices = [];
 let points;
 let centerPoint = { x: canvasWidth / 2, y: canvasHeight / 2 };
 let tracePointOriginal;
@@ -364,7 +365,7 @@ function checkNeighbors(randomVertex, distance){
   const rightNeighbor = (randomVertex - distance) % points.length;
   const leftNeighbor = (randomVertex + distance) % points.length;
 
-  if(randomVertex === leftNeighbor || randomVertex === rightNeighbor){
+  if(previousVertices[0] === leftNeighbor || previousVertices[0] === rightNeighbor){
     return false;
   }
 
@@ -494,7 +495,7 @@ function customFractal() {
 
   // TODO: Add functionality for all optional rules
 
-  const previousVertices = [];
+  previousVertices.clear();
   let canDraw = true;
   let randomVertex;
   let rightNeighbor;
@@ -539,7 +540,7 @@ function customFractal() {
             canDraw = checkNeighbors(randomVertex, 1);
 
             if(center){
-              if(randomVertex === points.length - 1){
+              if(previousVertices[0] === points.length - 1){
                 canDraw = false;
               }
 
@@ -556,7 +557,7 @@ function customFractal() {
                 rightNeighbor = (randomVertex - 1) % points.length;
                 leftNeighbor = (randomVertex + 1) % points.length;
 
-                if(randomVertex !== points.length - 1 && randomVertex !== leftNeighbor && randomVertex !== rightNeighbor){
+                if(previousVertices[0] !== points.length - 1 && previousVertices[0] !== leftNeighbor && previousVertices[0] !== rightNeighbor){
                   canDraw = false;
                 }
 
