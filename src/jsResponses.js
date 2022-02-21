@@ -35,5 +35,5 @@ module.exports = {
   getApp,
   getColorSelect,
   getUtils,
-  getNavBar
+  getNavBar,
 };

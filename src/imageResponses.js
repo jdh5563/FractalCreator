@@ -45,5 +45,5 @@ module.exports = {
   getMyName,
   getSierpinskiSpray,
   getSierpinskiCrazy,
-  getSnowflakeSpray
+  getSnowflakeSpray,
 };

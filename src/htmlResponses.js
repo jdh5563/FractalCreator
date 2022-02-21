@@ -29,5 +29,5 @@ const getCommunity = (request, response) => {
 module.exports = {
   getIndex,
   getApp,
-  getCommunity
+  getCommunity,
 };

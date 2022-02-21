@@ -29,5 +29,5 @@ const getAboutStyle = (request, response) => {
 module.exports = {
   getGlobalStyle,
   getAppStyle,
-  getAboutStyle
+  getAboutStyle,
 };
