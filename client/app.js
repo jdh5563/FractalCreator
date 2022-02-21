@@ -43,6 +43,7 @@ document.querySelector('#erase-pattern-button').onclick = () => {
   patternCtx.fillStyle = 'black';
   patternCtx.fillRect(0, 0, canvasWidth, canvasHeight);
   patternCtx.restore();
+  previousVertices = [];
 };
 
 let previousVertices = [];
@@ -74,6 +75,49 @@ distanceText.onchange = (e) => jumpDistance = 1 / e.target.value;
 distanceRange.onchange = () => jumpDistance = 1 / distanceText.value;
 
 const fractalOptionalRules = document.querySelector('#fractal-optional-rules').children;
+
+fractalOptionalRules[0].firstElementChild.addEventListener('change', () => {
+  if(centerIsVertex){
+    centerIsVertex = false;
+    points.pop();
+    resetColorList();
+
+    // Redraw the control points without the midpoints
+    controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+    drawControlPoints();
+  }
+  else{
+    centerIsVertex = true;
+    points.push(centerPoint);
+    resetColorList();
+  }
+});
+
+fractalOptionalRules[1].firstElementChild.addEventListener('change', () => {
+  if(midpointsAreVertices){
+    midpointsAreVertices = false;
+    for(let j = 1; j < points.length; j++){
+      points.splice(j, 1);
+    }
+
+    resetColorList();
+
+    // Redraw the control points without the midpoints
+    controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+    drawControlPoints();
+  }
+  else{
+    midpointsAreVertices = true;
+    const center = centerIsVertex ? points.pop() : null;
+    for(let j = 1; j < points.length + 1; j += 2){
+      points.splice(j, 0, { x: (points[j - 1].x + points[j % points.length].x) / 2, y: (points[j - 1].y + points[j % points.length].y) / 2 });
+    }
+
+    if(center) points.push(center);
+
+    resetColorList();
+  }
+});
 
 const fractalSelect = document.querySelector('#fractal-select');
 fractalSelect.onchange = () => init(fractalInfo);
@@ -107,6 +151,7 @@ const fractalFunctions = {
 function init(json) {
   // Clear the points array
   points = [];
+  previousVertices = [];
   tracePointOriginal = { x: Math.random() * (controlCanvas.width - 10), y: Math.random() * (controlCanvas.height - 10) };
   tracePoint = { x: tracePointOriginal.x, y: tracePointOriginal.y };
 
@@ -365,7 +410,7 @@ function checkNeighbors(randomVertex, distance){
   const rightNeighbor = (randomVertex - distance) % points.length;
   const leftNeighbor = (randomVertex + distance) % points.length;
 
-  if(previousVertices[0] === leftNeighbor || previousVertices[0] === rightNeighbor){
+  if(previousVertices[0] == leftNeighbor || previousVertices[0] == rightNeighbor){
     return false;
   }
 
@@ -494,8 +539,6 @@ function customFractal() {
   animationRequestID = requestAnimationFrame(customFractal);
 
   // TODO: Add functionality for all optional rules
-
-  previousVertices = [];
   let canDraw = true;
   let randomVertex;
   let rightNeighbor;
@@ -505,29 +548,10 @@ function customFractal() {
   for (let i = 0; i < jumpsPerFrame; i++) {
     randomVertex = Math.floor(Math.random() * points.length);
 
-    for(let checkbox of fractalOptionalRules){
-      if(checkbox.firstElementChild.checked){
-        switch(checkbox.firstElementChild.id){
-          case "center-vertex":
-            if(!centerIsVertex){
-              centerIsVertex = true;
-              points.push(centerPoint);
-              resetColorList();
-            }
-            break;
-          case "midpoint-vertex":
-            if(!midpointsAreVertices){
-              midpointsAreVertices = true;
-              const center = centerIsVertex ? points.pop() : null;
-              for(let j = 1; j < points.length + 1; j += 2){
-                points.splice(j, 0, { x: (points[j - 1].x + points[j % points.length].x) / 2, y: (points[j - 1].y + points[j % points.length].y) / 2 });
-              }
-
-              if(center) points.push(center);
-
-              resetColorList();
-            }
-            break;
+    for(let i = 2; i < fractalOptionalRules.length; i++){
+      const checkbox = fractalOptionalRules[i].firstElementChild;
+      if(checkbox.checked){
+        switch(checkbox.id){
           case "no-same-twice":
             if(randomVertex == previousVertices[0]){
               canDraw = false;
@@ -573,35 +597,6 @@ function customFractal() {
           case "no-distance-three":
             if(!centerIsVertex && (numSideSelect.value === '5' || midpointsAreVertices)){
               canDraw = checkNeighbors(randomVertex, 3);
-            }
-            break;
-        }
-      }
-      else{
-        switch(checkbox.firstElementChild.id){
-          case "center-vertex":
-            if(centerIsVertex){
-              centerIsVertex = false;
-              points.pop();
-              resetColorList();
-
-              // Redraw the control points without the midpoints
-              controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-              drawControlPoints();
-            }
-            break;
-          case "midpoint-vertex":
-            if(midpointsAreVertices){
-              midpointsAreVertices = false;
-              for(let j = 1; j < points.length; j++){
-                points.splice(j, 1);
-              }
-
-              resetColorList();
-
-              // Redraw the control points without the midpoints
-              controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-              drawControlPoints();
             }
             break;
         }
