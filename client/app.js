@@ -46,7 +46,7 @@ document.querySelector('#erase-pattern-button').onclick = () => {
 };
 
 let points;
-let centerPoint;
+let centerPoint = { x: canvasWidth / 2, y: canvasHeight / 2 };
 let tracePointOriginal;
 let tracePoint;
 let jumpDistance;
@@ -165,7 +165,7 @@ function resetControlPoints(json) {
   
   jumpsPerFrame = speedSelect.value;
 
-  if (fractalSelect.value != 'Custom Fractal') {
+  if (fractalSelect.value !== 'Custom Fractal') {
     shape = fractalSelect.value.split(' ');
     fractal = json[shape[shape.length - 1]];
     pointOffsets = fractal.pointOffsets;
@@ -197,7 +197,8 @@ function resetControlPoints(json) {
         ];
         break;
     }
-  } else {
+  }
+  else {
     switch (numSideSelect.value) {
       case '3':
         points = [
@@ -224,13 +225,26 @@ function resetControlPoints(json) {
         ];
         break;
     }
+
+    if(centerIsVertex){
+      points.push(centerPoint);
+    }
+
+    if(midpointsAreVertices){
+      const center = centerIsVertex ? points.pop() : null;
+      for(let j = 1; j < points.length + 1; j += 2){
+        points.splice(j, 0, { x: (points[j - 1].x + points[j % points.length].x) / 2, y: (points[j - 1].y + points[j % points.length].y) / 2 });
+      }
+
+      if(center) points.push(center);
+    }
+
     jumpDistance = 1 / distanceText.value;
   }
 
   // Clear the canvas
   controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-  centerPoint = { x: canvasWidth / 2, y: canvasHeight / 2 };
   calculatePolygonCentroid();
   drawControlPoints();
 }
@@ -264,9 +278,11 @@ function drawControlPoints() {
   controlCtx.beginPath();
   controlCtx.save();
   controlCtx.strokeStyle = 'white';
-  if(fractalSelect.value == 'Custom Fractal' && (points.length == parseInt(numSideSelect.value) + 1 || points.length == parseInt(numSideSelect.value) * 2 + 1)){
+  if(centerIsVertex){
     controlCtx.moveTo(points[points.length - 2].x, points[points.length - 2].y);
     for(let i = 0; i < points.length - 1; i++){
+      controlCtx.lineTo(points[i].x, points[i].y);
+      controlCtx.moveTo(centerPoint.x, centerPoint.y);
       controlCtx.lineTo(points[i].x, points[i].y);
     }
   }
@@ -342,6 +358,17 @@ function calculatePolygonCentroid() {
   }
   centerPoint.x = centroidX / points.length;
   centerPoint.y = centroidY / points.length;
+}
+
+function checkNeighbors(randomVertex, distance){
+  const rightNeighbor = (randomVertex - distance) % points.length;
+  const leftNeighbor = (randomVertex + distance) % points.length;
+
+  if(randomVertex === leftNeighbor || randomVertex === rightNeighbor){
+    return false;
+  }
+
+  return true;
 }
 
 // #region 1/2 jump fractals
@@ -505,26 +532,47 @@ function customFractal() {
               canDraw = false;
             }
             break;
-          case "no-distance-one":
-            rightNeighbor = (randomVertex - 1) % points.length;
-            leftNeighbor = (randomVertex + 1) % points.length;
-
-            if(randomVertex === leftNeighbor || randomVertex === rightNeighbor){
-              canDraw = false;
-            }
-            break;
-          case "no-distance-two":
-            if(centerIsVertex){
-
-            }
-            break;
-          case "no-distance-three":
-            break;
           case "same-twice-no-one":
+            if(previousVertices[0] != previousVertices[1]) break;
+          case "no-distance-one":
+            const center = centerIsVertex ? points.pop() : null;
+            canDraw = checkNeighbors(randomVertex, 1);
+
+            if(center){
+              if(randomVertex === points.length - 1){
+                canDraw = false;
+              }
+
+              points.push(center);
+            }
             break;
           case "same-twice-no-two":
+            if(previousVertices[0] != previousVertices[1]) break;
+          case "no-distance-two":
+            if(numSideSelect.value !== '3' || midpointsAreVertices){
+              const center = centerIsVertex ? points.pop() : null;
+
+              if(center){
+                rightNeighbor = (randomVertex - 1) % points.length;
+                leftNeighbor = (randomVertex + 1) % points.length;
+
+                if(randomVertex !== points.length - 1 && randomVertex !== leftNeighbor && randomVertex !== rightNeighbor){
+                  canDraw = false;
+                }
+
+                points.push(center);
+              }
+              else{
+                canDraw = checkNeighbors(randomVertex, 2);
+              }
+            }
             break;
           case "same-twice-no-three":
+            if(previousVertices[0] != previousVertices[1]) break;
+          case "no-distance-three":
+            if(!centerIsVertex && (numSideSelect.value === '5' || midpointsAreVertices)){
+              canDraw = checkNeighbors(randomVertex, 3);
+            }
             break;
         }
       }
@@ -535,6 +583,10 @@ function customFractal() {
               centerIsVertex = false;
               points.pop();
               resetColorList();
+
+              // Redraw the control points without the midpoints
+              controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+              drawControlPoints();
             }
             break;
           case "midpoint-vertex":
