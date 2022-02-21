@@ -1,5 +1,6 @@
 import { loadFile } from './utilities.js';
 
+//#region Fields
 let fractalInfo;
 
 const canvasWidth = document.querySelector('#canvas-column').offsetWidth * 0.95;
@@ -147,7 +148,9 @@ const fractalFunctions = {
   'Star Pentagon': pentagonStar,
   'Custom Fractal': customFractal,
 };
+//#endregion
 
+//#region Initialization / Reseting
 function init(json) {
   // Clear the points array
   points = [];
@@ -178,29 +181,6 @@ function init(json) {
 
   cancelAnimationFrame(animationRequestID);
   fractalFunctions[fractalSelect.value]();
-}
-
-function draw(randomVertex) {
-  if (!isPaused) {
-    tracePoint.x = (tracePoint.x + points[randomVertex].x) / jumpDistance;
-    tracePoint.y = (tracePoint.y + points[randomVertex].y) / jumpDistance;
-
-    patternCtx.save();
-    patternCtx.globalAlpha = 0.1 * dotSize;
-    patternCtx.fillStyle = colorSelects
-      .children[Math.floor(randomVertex / 6)]
-      .children[randomVertex % 6]
-      .shadowRoot.querySelector('select').value;
-
-    patternCtx.beginPath();
-    patternCtx.translate(tracePoint.x, tracePoint.y);
-    patternCtx.arc(0, 0, dotSize, 0, 360);
-    patternCtx.fill();
-    patternCtx.closePath();
-    patternCtx.restore();
-  }
-
-  if (!isControlHidden) drawControlPoints();
 }
 
 function resetControlPoints(json) {
@@ -306,6 +286,31 @@ function resetColorList(){
     colorSelects.children[colorSelects.children.length - 1].appendChild(document.createElement('color-select'));
   }
 }
+//#endregion
+
+//#region Drawing things
+function draw(randomVertex) {
+  if (!isPaused) {
+    tracePoint.x = (tracePoint.x + points[randomVertex].x) / jumpDistance;
+    tracePoint.y = (tracePoint.y + points[randomVertex].y) / jumpDistance;
+
+    patternCtx.save();
+    patternCtx.globalAlpha = 0.1 * dotSize;
+    patternCtx.fillStyle = colorSelects
+      .children[Math.floor(randomVertex / 6)]
+      .children[randomVertex % 6]
+      .shadowRoot.querySelector('select').value;
+
+    patternCtx.beginPath();
+    patternCtx.translate(tracePoint.x, tracePoint.y);
+    patternCtx.arc(0, 0, dotSize, 0, 360);
+    patternCtx.fill();
+    patternCtx.closePath();
+    patternCtx.restore();
+  }
+
+  if (!isControlHidden) drawControlPoints();
+}
 
 function drawControlPoints() {
   // Draw each of the attractors
@@ -352,7 +357,9 @@ function drawControlPoints() {
   controlCtx.restore();
   controlCtx.closePath();
 }
+//#endregion
 
+//#region Configuring control points
 function grabControlPoint(e) {
   if ((e.offsetX > centerPoint.x - 5 && e.offsetX < centerPoint.x + 5)
     && (e.offsetY > centerPoint.y - 5 && e.offsetY < centerPoint.y + 5)) {
@@ -394,7 +401,9 @@ function moveControlPoint(e) {
 function dropControlPoint() {
   heldPoint = null;
 }
+//#endregion
 
+//#region Helper Functions
 function calculatePolygonCentroid() {
   let centroidX = 0;
   let centroidY = 0;
@@ -416,6 +425,7 @@ function checkNeighbors(randomVertex, distance){
 
   return true;
 }
+//#endregion
 
 // #region 1/2 jump fractals
 function triangleSierpinski() {
