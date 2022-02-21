@@ -4,6 +4,7 @@ const fs = require('fs');
 const js = fs.readFileSync(`${__dirname}/../client/app.js`);
 const app = fs.readFileSync(`${__dirname}/../client/colorselect.js`);
 const utils = fs.readFileSync(`${__dirname}/../client/utilities.js`);
+const navbar = fs.readFileSync(`${__dirname}/../client/navbar.js`);
 
 // Writes the javascript into the response
 const getApp = (request, response) => {
@@ -24,8 +25,15 @@ const getUtils = (request, response) => {
   response.end();
 };
 
+const getNavBar = (request, response) => {
+  response.writeHead(200, { 'Content-Type': 'text/javascript' });
+  response.write(navbar);
+  response.end();
+};
+
 module.exports = {
   getApp,
   getColorSelect,
   getUtils,
+  getNavBar
 };

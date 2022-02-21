@@ -12,12 +12,21 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 // Calls different functions depending on what was requested
 const urlStruct = {
   '/': htmlHandler.getIndex,
+  '/about.html': htmlHandler.getIndex,
+  '/app.html': htmlHandler.getApp,
+  '/community.html': htmlHandler.getCommunity,
   '/images/favicon.png': imageHandler.getFavicon,
+  '/images/my-name.png': imageHandler.getMyName,
+  '/images/sierpinski-spraypaint.png': imageHandler.getSierpinskiSpray,
+  '/images/sierpinski-triangle.png': imageHandler.getSierpinskiCrazy,
+  '/images/snowflake-pentagon.png': imageHandler.getSnowflakeSpray,
   '/styles/style.css': cssHandler.getGlobalStyle,
   '/styles/app.css': cssHandler.getAppStyle,
+  '/styles/about.css': cssHandler.getAboutStyle,
   '/src/app.js': jsHandler.getApp,
   '/src/colorselect.js': jsHandler.getColorSelect,
   '/src/utilities.js': jsHandler.getUtils,
+  '/src/navbar.js': jsHandler.getNavBar,
   '/fractalinfo.json': jsonHandler.getFractalInfo,
   notFound: jsonHandler.notFound,
 };
