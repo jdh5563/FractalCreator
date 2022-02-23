@@ -47,6 +47,8 @@ document.querySelector('#erase-pattern-button').onclick = () => {
   previousVertices = [];
 };
 
+document.querySelector('#post-form').addEventListener('submit', async () => await fetch('/post.html'));
+
 let previousVertices = [];
 let points;
 let centerPoint = { x: canvasWidth / 2, y: canvasHeight / 2 };

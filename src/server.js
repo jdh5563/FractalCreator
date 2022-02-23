@@ -14,6 +14,7 @@ const urlStruct = {
   '/': htmlHandler.getIndex,
   '/about.html': htmlHandler.getIndex,
   '/app.html': htmlHandler.getApp,
+  '/post.html': htmlHandler.getPost,
   '/community.html': jsonHandler.notImplemented,
   '/images/favicon.png': imageHandler.getFavicon,
   '/images/my-name.png': imageHandler.getMyName,

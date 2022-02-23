@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Post Fractal</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+        <link rel="stylesheet" href="styles/style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="images/favicon.png">
+        <script src="src/navbar.js" type="module"></script>
+    </head>
+    <body class="has-navbar-fixed-top">
+        <nav-bar></nav-bar>
+        <div class="columns is-centered">
+            <div class="card column is-5 mt-5">
+                <div class="card-header">
+                    <div class="card-header-title">
+                        <input class="input" placeholder="Post Title Here!"></input>
+                    </div>
+                </div>
+                <div class="card-content mt-6">
+                    <img src="" alt="The fractal being posted">
+                </div>
+                <div class="card-content">
+                    <textarea class="textarea" rows=4 placeholder="Write your post content here!"></textarea>
+                </div>
+                <div class="card-footer">
+                    <a id="postButton" href="#" class="card-footer-item">Post</a>
+                    <a id="cancelButton" href="app.html" class="card-footer-item">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
