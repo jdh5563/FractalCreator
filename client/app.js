@@ -3,6 +3,9 @@ import { loadFile } from './utilities.js';
 //#region Fields
 let fractalInfo;
 
+const prefix = 'jdh5563';
+const canvasKey = prefix + 'canvas';
+
 const canvasWidth = document.querySelector('#canvas-column').offsetWidth * 0.95;
 const canvasHeight = canvasWidth * 0.75;
 
@@ -47,7 +50,10 @@ document.querySelector('#erase-pattern-button').onclick = () => {
   previousVertices = [];
 };
 
-document.querySelector('#post-form').addEventListener('submit', async () => await fetch('/post.html'));
+document.querySelector('#post-form').addEventListener('submit', async () => {
+  localStorage.setItem(canvasKey, patternCanvas.toDataURL());
+  await fetch('/post.html');
+});
 
 let previousVertices = [];
 let points;

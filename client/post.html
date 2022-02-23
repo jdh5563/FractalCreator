@@ -11,7 +11,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="images/favicon.png">
-        <script src="src/navbar.js" type="module"></script>
+        <script src="/client/navbar.js" type="module"></script>
+        <script src="/client/post.js" type="module"></script>
     </head>
     <body class="has-navbar-fixed-top">
         <nav-bar></nav-bar>
@@ -23,7 +24,7 @@
                     </div>
                 </div>
                 <div class="card-content mt-6">
-                    <img src="" alt="The fractal being posted">
+                    <img id="canvas-image" src="" alt="The fractal being posted">
                 </div>
                 <div class="card-content">
                     <textarea class="textarea" rows=4 placeholder="Write your post content here!"></textarea>

@@ -1,8 +1,9 @@
 const fs = require('fs');
 
-// The JS file
+// The JS files
 const js = fs.readFileSync(`${__dirname}/../client/app.js`);
 const app = fs.readFileSync(`${__dirname}/../client/colorselect.js`);
+const post = fs.readFileSync(`${__dirname}/../client/post.js`);
 const utils = fs.readFileSync(`${__dirname}/../client/utilities.js`);
 const navbar = fs.readFileSync(`${__dirname}/../client/navbar.js`);
 
@@ -10,6 +11,13 @@ const navbar = fs.readFileSync(`${__dirname}/../client/navbar.js`);
 const getApp = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/javascript' });
   response.write(js);
+  response.end();
+};
+
+// Writes the javascript into the response
+const getPost = (request, response) => {
+  response.writeHead(200, { 'Content-Type': 'text/javascript' });
+  response.write(post);
   response.end();
 };
 
@@ -33,6 +41,7 @@ const getNavBar = (request, response) => {
 
 module.exports = {
   getApp,
+  getPost,
   getColorSelect,
   getUtils,
   getNavBar,
