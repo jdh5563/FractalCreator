@@ -6,7 +6,7 @@ import { getDatabase, ref, set, get, push, onValue } from  "https://www.gstatic.
 
 class FireBase {
     #database;
-    #teamCode = 0;
+    #userCode = 0;
     #prefix = "jdh5563";
     #codeKey = this.#prefix + "code";
 
@@ -30,7 +30,7 @@ class FireBase {
 
             const code = localStorage.getItem(this.#codeKey);
             if(code)
-                this.setTeamCode(code);
+                this.setUserCode(code);
 
             FireBase.firebaseInstance = this;
         }
@@ -43,24 +43,13 @@ class FireBase {
         return path ? ref(this.#database, path) : ref(this.#database);
     }
 
-    getTeamCode(){
-        return this.#teamCode;
+    getUserCode(){
+        return this.#userCode;
     }
 
-    setTeamCode(code){
-        this.#teamCode = code;
+    setUserCode(code){
+        this.#userCode = code;
         localStorage.setItem(this.#codeKey, code);
-    }
-
-    updateDatabase(teams, names){
-        if(this.getTeamCode()){
-            this.getUserData(this.getTeamCode()).then(snapshot => {
-                set(this.getReference(this.getTeamCode()), { teams: teams, names: names, posts: snapshot.val().posts });
-                });
-        }
-        else{
-            this.setTeamCode(push(this.getReference(), { teams: teams, names: names})._path.pieces_[0]);
-        }
     }
 
     getUserData(path){
@@ -68,8 +57,9 @@ class FireBase {
     }
 
     createPost(title, content, canvasSrc){
-        push(this.getReference(this.getTeamCode() + '/posts'), { title: title, content: content, canvasSrc: canvasSrc });
-        onValue(this.getReference(this.getTeamCode()), async () => await fetch('/community.html'), { onlyOnce: true });
+        if(this.#userCode) push(this.getReference(this.#userCode + '/posts'), { title: title, content: content, canvasSrc: canvasSrc });
+        else this.setUserCode(push(this.getReference(), { posts: { title: title, content: content, canvasSrc: canvasSrc } })._path.pieces_[0]);
+        onValue(this.getReference(this.#userCode), async () => await fetch('/community.html'), { onlyOnce: true });
     }
 }
 

@@ -15,18 +15,6 @@ const getFractalInfo = (request, response) => {
   respondJSON(request, response, 200, responseJSON);
 };
 
-// function to show not implemented error
-const notImplemented = (request, response) => {
-  // error message with a description and consistent error id
-  const responseJSON = {
-    message: 'This page has not been implemented yet. Check back later for updates!',
-    id: 'notImplemented',
-  };
-
-  // return our json with a 501 error code
-  return respondJSON(request, response, 501, responseJSON);
-};
-
 // function to show not found error
 const notFound = (request, response) => {
   // error message with a description and consistent error id
@@ -44,6 +32,5 @@ const notFound = (request, response) => {
 // are the same name, you can short handle to just getIndex,
 module.exports = {
   getFractalInfo,
-  notImplemented,
   notFound,
 };

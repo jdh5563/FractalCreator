@@ -4,6 +4,8 @@ const fs = require('fs');
 const js = fs.readFileSync(`${__dirname}/../client/app.js`);
 const app = fs.readFileSync(`${__dirname}/../client/colorselect.js`);
 const post = fs.readFileSync(`${__dirname}/../client/post.js`);
+const community = fs.readFileSync(`${__dirname}/../client/community.js`);
+const firebase = fs.readFileSync(`${__dirname}/../client/firebase.js`);
 const utils = fs.readFileSync(`${__dirname}/../client/utilities.js`);
 const navbar = fs.readFileSync(`${__dirname}/../client/navbar.js`);
 
@@ -18,6 +20,20 @@ const getApp = (request, response) => {
 const getPost = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/javascript' });
   response.write(post);
+  response.end();
+};
+
+// Writes the javascript into the response
+const getCommunity = (request, response) => {
+  response.writeHead(200, { 'Content-Type': 'text/javascript' });
+  response.write(community);
+  response.end();
+};
+
+// Writes the javascript into the response
+const getFirebase = (request, response) => {
+  response.writeHead(200, { 'Content-Type': 'text/javascript' });
+  response.write(firebase);
   response.end();
 };
 
@@ -42,6 +58,8 @@ const getNavBar = (request, response) => {
 module.exports = {
   getApp,
   getPost,
+  getCommunity,
+  getFirebase,
   getColorSelect,
   getUtils,
   getNavBar,
