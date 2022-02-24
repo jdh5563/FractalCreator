@@ -31,6 +31,7 @@ const urlStruct = {
   '/client/colorselect.js': jsHandler.getColorSelect,
   '/client/utilities.js': jsHandler.getUtils,
   '/client/navbar.js': jsHandler.getNavBar,
+  '/client/userpost.js': jsHandler.getUserPost,
   '/fractalinfo.json': jsonHandler.getFractalInfo,
   notFound: jsonHandler.notFound,
 };

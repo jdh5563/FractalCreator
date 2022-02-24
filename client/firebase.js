@@ -57,9 +57,10 @@ class FireBase {
     }
 
     createPost(title, content, canvasSrc){
-        if(this.#userCode) push(this.getReference(this.#userCode + '/posts'), { title: title, content: content, canvasSrc: canvasSrc });
-        else this.setUserCode(push(this.getReference(), { posts: { title: title, content: content, canvasSrc: canvasSrc } })._path.pieces_[0]);
+        if(!this.#userCode) this.setUserCode(push(this.getReference(), { })._path.pieces_[0]);
+        
         onValue(this.getReference(this.#userCode), () => location.href = '/community.html', { onlyOnce: true });
+        push(this.getReference(this.#userCode + '/posts'), { title: title, content: content, canvasSrc: canvasSrc });
     }
 }
 

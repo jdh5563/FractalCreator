@@ -12,10 +12,18 @@
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="images/favicon.png">
         <script src="/client/navbar.js" type="module"></script>
+        <script src="/client/userpost.js" type="module"></script>
         <script src="/client/community.js" type="module"></script>
     </head>
     <body class="has-navbar-fixed-top">
         <nav-bar></nav-bar>
-        <h1 class="h1 mt-3">THIS IS A WORK IN PROGRESS</h1>
+        <section class="section">
+            <div class="container columns is-centered">
+                <div class="column">
+                    <p class="is-size-3 mb-6">Posts From the Community</p>
+                    <div id="posts"></div>
+                </div>
+            </div>
+        </section>
     </body>
 </html>

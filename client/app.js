@@ -51,8 +51,15 @@ document.querySelector('#erase-pattern-button').onclick = () => {
 };
 
 document.querySelector('#post-form').addEventListener('submit', async e => {
-  localStorage.setItem(canvasKey, patternCanvas.toDataURL());
-  await fetch(e.target.getAttribute('action'));
+  // Create a POST request with the screenshot in the body
+  await fetch(e.target.getAttribute('action'), {
+    method: e.target.getAttribute('method'),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'text/plain',
+    },
+    body: patternCanvas.toDataURL(),
+  });
 });
 
 let previousVertices = [];

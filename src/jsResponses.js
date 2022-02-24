@@ -8,6 +8,7 @@ const community = fs.readFileSync(`${__dirname}/../client/community.js`);
 const firebase = fs.readFileSync(`${__dirname}/../client/firebase.js`);
 const utils = fs.readFileSync(`${__dirname}/../client/utilities.js`);
 const navbar = fs.readFileSync(`${__dirname}/../client/navbar.js`);
+const userpost = fs.readFileSync(`${__dirname}/../client/userpost.js`);
 
 // Writes the javascript into the response
 const getApp = (request, response) => {
@@ -55,6 +56,12 @@ const getNavBar = (request, response) => {
   response.end();
 };
 
+const getUserPost = (request, response) => {
+  response.writeHead(200, { 'Content-Type': 'text/javascript' });
+  response.write(userpost);
+  response.end();
+};
+
 module.exports = {
   getApp,
   getPost,
@@ -63,4 +70,5 @@ module.exports = {
   getColorSelect,
   getUtils,
   getNavBar,
+  getUserPost,
 };
