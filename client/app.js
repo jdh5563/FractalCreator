@@ -1,4 +1,4 @@
-import { loadFile } from './utilities.js';
+import { lerpVector, loadFile } from './utilities.js';
 
 //#region Fields
 let fractalInfo;
@@ -50,9 +50,9 @@ document.querySelector('#erase-pattern-button').onclick = () => {
   previousVertices = [];
 };
 
-document.querySelector('#post-form').addEventListener('submit', async () => {
+document.querySelector('#post-form').addEventListener('submit', async e => {
   localStorage.setItem(canvasKey, patternCanvas.toDataURL());
-  await fetch('/post.html');
+  await fetch(e.target.getAttribute('action'));
 });
 
 let previousVertices = [];
@@ -299,8 +299,7 @@ function resetColorList(){
 //#region Drawing things
 function draw(randomVertex) {
   if (!isPaused) {
-    tracePoint.x = (tracePoint.x + points[randomVertex].x) / jumpDistance;
-    tracePoint.y = (tracePoint.y + points[randomVertex].y) / jumpDistance;
+    tracePoint = lerpVector(tracePoint, points[randomVertex], 1 / jumpDistance);
 
     patternCtx.save();
     patternCtx.globalAlpha = 0.1 * dotSize;

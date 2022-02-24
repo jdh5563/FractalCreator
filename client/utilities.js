@@ -1,20 +1,11 @@
-function getRandomUnitVector() {
-  let x = getRandom(-1, 1);
-  let y = getRandom(-1, 1);
-  let length = Math.sqrt(x * x + y * y);
-  if (length == 0) { // very unlikely
-    x = 1; // point right
-    y = 0;
-    length = 1;
-  } else {
-    x /= length;
-    y /= length;
-  }
-  return { x, y };
-}
+// LERP function found here: https://github.com/mattdesl/lerp/blob/master/index.js
+// Linear interpolation of a vector. This works like normal LERP but applies it to each component of the vector
+function lerpVector (startVector, endVector, percent){
+  return {
+    x: startVector.x * (1 - percent) + endVector.x * percent,
+    y: startVector.y * (1 - percent) + endVector.y * percent
+  };
 
-function getRandom(min, max) {
-  return Math.random() * (max - min) + min;
 }
 
 // Load a given url
@@ -28,4 +19,4 @@ const loadFile = (url, callback) => {
   fetchPromise();
 };
 
-export { loadFile };
+export { loadFile, lerpVector };

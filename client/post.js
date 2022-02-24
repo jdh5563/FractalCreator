@@ -8,7 +8,8 @@ const title = document.querySelector('input');
 const content = document.querySelector('textarea');
 
 function init(){
-    document.querySelector("#post-button").onclick = () => {
+    document.querySelector("#post-button").onclick = e => {
+        e.preventDefault();
         firebaseInstance.createPost(
             title.value,
             content.value,
