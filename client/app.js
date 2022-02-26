@@ -3,9 +3,6 @@ import { lerpVector, loadFile } from './utilities.js';
 //#region Fields
 let fractalInfo;
 
-const prefix = 'jdh5563';
-const canvasKey = prefix + 'canvas';
-
 const canvasWidth = document.querySelector('#canvas-column').offsetWidth * 0.95;
 const canvasHeight = canvasWidth * 0.75;
 
@@ -52,14 +49,16 @@ document.querySelector('#erase-pattern-button').onclick = () => {
 
 document.querySelector('#post-form').addEventListener('submit', async e => {
   // Create a POST request with the screenshot in the body
-  await fetch(e.target.getAttribute('action'), {
+  await fetch('/addPost', {
     method: e.target.getAttribute('method'),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': 'text/plain',
     },
-    body: patternCanvas.toDataURL(),
+    body: `src=${patternCanvas.toDataURL()}`,
   });
+
+  await fetch(e.target.getAttribute('action'));
 });
 
 let previousVertices = [];

@@ -2,6 +2,8 @@ const fs = require('fs');
 
 const fractalInfo = fs.readFileSync(`${__dirname}/../fractalinfo.json`);
 
+let canvasSrc;
+
 // function to send a json object
 const respondJSON = (request, response, status, object) => {
   response.writeHead(status, { 'Content-Type': 'application/json' });
@@ -14,6 +16,19 @@ const getFractalInfo = (request, response) => {
   const responseJSON = JSON.parse(fractalInfo);
   respondJSON(request, response, 200, responseJSON);
 };
+
+const getPost = (request, response) => {
+  return respondJSON(request, response, 200, canvasSrc);
+}
+
+const addPost = (request, response, body) => {
+  responseJSON = {
+    message: 'Created Successfully'
+  };
+
+  canvasSrc = { src: body.src.split(' ').join('+') };
+  return respondJSON(request, response, 201, responseJSON);
+}
 
 // function to show not found error
 const notFound = (request, response) => {
@@ -32,5 +47,7 @@ const notFound = (request, response) => {
 // are the same name, you can short handle to just getIndex,
 module.exports = {
   getFractalInfo,
+  getPost,
+  addPost,
   notFound,
 };

@@ -1,3 +1,5 @@
+import { firebaseInstance } from "./firebase.js";
+
 const template = document.createElement("template");
 template.innerHTML = `
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
@@ -27,6 +29,10 @@ template.innerHTML = `
             <a class="navbar-item" href="community.html">
                 Community
             </a>
+
+            <input id="codeInput" class="input is-info is-light mt-3 mr-1" type="text" placeholder="Your User Code"></input>
+            <button id="codeButton" class="button is-info is-light mt-3 mx-1">Use Code</button>
+            <div id="code-notification" class="navbar-item notification is-light is-hidden ml-1"></div>
         </div>
     </div>
 </nav>
@@ -44,7 +50,7 @@ class NavBar extends HTMLElement {
         // Tell the user what page they are on
         const navbarStart = this.shadowRoot.querySelector(".navbar-start");
         const pageURL = window.location.href.split('/');
-        for(let i = 0; i < navbarStart.children.length; i++){
+        for(let i = 0; i < navbarStart.children.length - 3; i++){
             const child = navbarStart.children[i];
             child.innerHTML += pageURL[pageURL.length - 1] == child.href.split('/')[child.href.split('/').length - 1] ? `<br>(You are here)` : "";
         }
@@ -55,6 +61,26 @@ class NavBar extends HTMLElement {
                 e.target.classList.toggle("is-active");
                 this.shadowRoot.querySelector(".navbar-menu").classList.toggle("is-active");
             }
+        }
+
+        this.shadowRoot.querySelector("#codeInput").value = firebaseInstance.getUserCode() || "";
+
+        const codeButton = this.shadowRoot.querySelector("#codeButton");
+        codeButton.onclick = e => {
+            const code = e.target.previousElementSibling.value;
+            const notification = e.target.nextElementSibling;
+            firebaseInstance.getUserData(code)
+                .then(snapshot => {
+                    if(snapshot.exists()) {
+                        firebaseInstance.setUserCode(code);
+                        location.reload();
+                    }
+                    else{
+                        notification.classList.add("is-danger");
+                        notification.classList.remove("is-hidden");
+                        notification.innerHTML = `<b>User Code not set! That code does not exist!<b>`;
+                    }
+                });
         }
     }
 }
