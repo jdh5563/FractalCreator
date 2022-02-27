@@ -32,6 +32,7 @@ template.innerHTML = `
 
             <input id="codeInput" class="input is-info is-light mt-3 mr-1" type="text" placeholder="Your User Code"></input>
             <button id="codeButton" class="button is-info is-light mt-3 mx-1">Use Code</button>
+            <button id="new-code-button" class="button is-info is-light mt-3 mx-1">Create New Code</button>
             <div id="code-notification" class="navbar-item notification is-light is-hidden ml-1"></div>
         </div>
     </div>
@@ -50,7 +51,7 @@ class NavBar extends HTMLElement {
         // Tell the user what page they are on
         const navbarStart = this.shadowRoot.querySelector(".navbar-start");
         const pageURL = window.location.href.split('/');
-        for(let i = 0; i < navbarStart.children.length - 3; i++){
+        for(let i = 0; i < navbarStart.children.length - 4; i++){
             const child = navbarStart.children[i];
             child.innerHTML += pageURL[pageURL.length - 1] == child.href.split('/')[child.href.split('/').length - 1] ? `<br>(You are here)` : "";
         }
@@ -64,6 +65,7 @@ class NavBar extends HTMLElement {
         }
 
         this.shadowRoot.querySelector("#codeInput").value = firebaseInstance.getUserCode() || "";
+        this.shadowRoot.querySelector("#new-code-button").onclick = () => firebaseInstance.createNewCode();
 
         const codeButton = this.shadowRoot.querySelector("#codeButton");
         codeButton.onclick = e => {

@@ -60,6 +60,11 @@ class FireBase {
         onValue(this.getReference(this.#userCode), () => location.href = '/community.html', { onlyOnce: true });
         push(this.getReference(this.#userCode + '/posts'), { title: title, content: content, canvasSrc: canvasSrc });
     }
+
+    createNewCode(){
+        onValue(this.getReference(), () => location.reload(), { onlyOnce: true });
+        this.setUserCode(push(this.getReference(), { })._path.pieces_[0]);
+    }
 }
 
 const firebaseInstance = new FireBase();

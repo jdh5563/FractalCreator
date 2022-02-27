@@ -1,3 +1,4 @@
+import { firebaseInstance } from './firebase.js';
 import { lerpVector, loadFile } from './utilities.js';
 
 //#region Fields
@@ -47,18 +48,26 @@ document.querySelector('#erase-pattern-button').onclick = () => {
   previousVertices = [];
 };
 
-document.querySelector('#post-form').addEventListener('submit', async e => {
-  // Create a POST request with the screenshot in the body
-  await fetch('/addPost', {
-    method: e.target.getAttribute('method'),
+document.querySelector('#post-button').addEventListener('click', async e => {
+  // Create a POST request with the canvas screenshot in the body
+  const tryAddPost = await fetch('/addPost', {
+    method: 'post',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'text/plain',
+      'Accept': 'application/json',
     },
-    body: `src=${patternCanvas.toDataURL()}`,
+    body: `src=${patternCanvas.toDataURL()}&hasUserCode=${firebaseInstance.getUserCode()}`,
   });
 
-  await fetch(e.target.getAttribute('action'));
+  if(tryAddPost.status !== 400) location.href = '/post.html';
+  else{
+    const notification = document.querySelector('nav-bar').shadowRoot.querySelector('#code-notification');
+    const errorJSON = await tryAddPost.json();
+            
+    notification.classList.add("is-danger");
+    notification.classList.remove("is-hidden");
+    notification.innerHTML = `<b>${errorJSON.message}<b>`;
+  }
 });
 
 let previousVertices = [];

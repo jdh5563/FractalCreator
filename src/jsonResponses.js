@@ -22,12 +22,22 @@ const getPost = (request, response) => {
 }
 
 const addPost = (request, response, body) => {
-  responseJSON = {
-    message: 'Created Successfully'
+  let status = 400;
+  let responseJSON = {
+    message: 'Valid user code not set!',
+    id: 'userCodeParamMissing'
   };
 
-  canvasSrc = { src: body.src.split(' ').join('+') };
-  return respondJSON(request, response, 201, responseJSON);
+  if(body.hasUserCode !== '0'){
+    status = 201;
+    responseJSON = {
+      message: 'Created Successfully'
+    };
+
+    canvasSrc = { src: body.src.split(' ').join('+') };
+  }
+
+  return respondJSON(request, response, status, responseJSON);
 }
 
 // function to show not found error
