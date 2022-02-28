@@ -23,7 +23,6 @@ patternCanvas.height = canvasHeight;
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload
 window.addEventListener('beforeunload', async function (e) {
-  console.log('Before Unload');
   // the absence of a returnValue property on the event will guarantee the browser unload happens
   const response = await fetch('/savePost', {
     method: 'post',
@@ -33,8 +32,6 @@ window.addEventListener('beforeunload', async function (e) {
     },
     body: `src=${patternCanvas.toDataURL()}`,
   });
-
-  console.log(response.status);
 
   delete e['returnValue'];
 });

@@ -23,26 +23,25 @@ const getFractalInfo = (request, response) => {
 };
 
 const getPost = (request, response) => {
-  if (canvasSrc){
+  if (canvasSrc) {
     return respondJSON(request, response, 200, canvasSrc);
   }
-  else{
-    return respondJSON(request, response, 200, { });
-  }
-}
+
+  return respondJSON(request, response, 200, { });
+};
 
 const addPost = (request, response, body) => {
   let status = 400;
   let responseJSON = {
     message: 'Valid user code not set!',
-    id: 'userCodeParamMissing'
+    id: 'userCodeParamMissing',
   };
 
-  if(body.hasUserCode !== '0'){
-    if(canvasSrc){
+  if (body.hasUserCode !== '0') {
+    if (canvasSrc) {
       status = 204;
       responseJSON = {
-        message: 'Updated Successfully'
+        message: 'Updated Successfully',
       };
 
       canvasSrc = { src: body.src.split(' ').join('+') };
@@ -52,25 +51,25 @@ const addPost = (request, response, body) => {
 
     status = 201;
     responseJSON = {
-      message: 'Created Successfully'
+      message: 'Created Successfully',
     };
 
     canvasSrc = { src: body.src.split(' ').join('+') };
   }
 
   return respondJSON(request, response, status, responseJSON);
-}
+};
 
 const savePost = (request, response, body) => {
   let status = 201;
   let responseJSON = {
-    message: 'Created Successfully'
+    message: 'Created Successfully',
   };
 
-  if(canvasSrc){
+  if (canvasSrc) {
     status = 204;
     responseJSON = {
-      message: 'Updated Successfully'
+      message: 'Updated Successfully',
     };
 
     canvasSrc = { src: body.src.split(' ').join('+') };
@@ -81,7 +80,7 @@ const savePost = (request, response, body) => {
   canvasSrc = { src: body.src.split(' ').join('+') };
 
   return respondJSON(request, response, status, responseJSON);
-}
+};
 
 // function to show not found error
 const notFound = (request, response) => {
