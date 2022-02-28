@@ -59,7 +59,6 @@ const parseBody = (request, response, handler) => {
 
 //handle POST requests
 const handlePost = (request, response, parsedUrl) => {
-  console.log(parsedUrl.pathname);
   //If they go to /addPost
   if(parsedUrl.pathname === '/addPost') {
     
