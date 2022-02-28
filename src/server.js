@@ -59,13 +59,16 @@ const parseBody = (request, response, handler) => {
 
 //handle POST requests
 const handlePost = (request, response, parsedUrl) => {
-  
+  console.log(parsedUrl.pathname);
   //If they go to /addPost
   if(parsedUrl.pathname === '/addPost') {
     
     //Call our below parseBody handler, and in turn pass in the
     //jsonHandler.addUser function as the handler callback function.
     parseBody(request, response, jsonHandler.addPost);
+  }
+  else if(parsedUrl.pathname === '/savePost') {
+    parseBody(request, response, jsonHandler.savePost);
   }
 };
 
@@ -94,6 +97,7 @@ const urlStruct = {
   '/client/userpost.js': jsHandler.getUserPost,
   '/fractalinfo.json': jsonHandler.getFractalInfo,
   '/getPost': jsonHandler.getPost,
+  '/savePost': handlePost,
   '/addPost': handlePost,
 
   notFound: jsonHandler.notFound,

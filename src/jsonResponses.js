@@ -11,6 +11,11 @@ const respondJSON = (request, response, status, object) => {
   response.end();
 };
 
+const respondJSONMeta = (request, response, status) => {
+  response.writeHead(status, { 'Content-Type': 'application/json' });
+  response.end();
+};
+
 // Gets the JSON for fractal data
 const getFractalInfo = (request, response) => {
   const responseJSON = JSON.parse(fractalInfo);
@@ -18,7 +23,12 @@ const getFractalInfo = (request, response) => {
 };
 
 const getPost = (request, response) => {
-  return respondJSON(request, response, 200, canvasSrc);
+  if (canvasSrc){
+    return respondJSON(request, response, 200, canvasSrc);
+  }
+  else{
+    return respondJSON(request, response, 200, { });
+  }
 }
 
 const addPost = (request, response, body) => {
@@ -29,6 +39,17 @@ const addPost = (request, response, body) => {
   };
 
   if(body.hasUserCode !== '0'){
+    if(canvasSrc){
+      status = 204;
+      responseJSON = {
+        message: 'Updated Successfully'
+      };
+
+      canvasSrc = { src: body.src.split(' ').join('+') };
+
+      return respondJSONMeta(request, response, status);
+    }
+
     status = 201;
     responseJSON = {
       message: 'Created Successfully'
@@ -36,6 +57,28 @@ const addPost = (request, response, body) => {
 
     canvasSrc = { src: body.src.split(' ').join('+') };
   }
+
+  return respondJSON(request, response, status, responseJSON);
+}
+
+const savePost = (request, response, body) => {
+  let status = 201;
+  let responseJSON = {
+    message: 'Created Successfully'
+  };
+
+  if(canvasSrc){
+    status = 204;
+    responseJSON = {
+      message: 'Updated Successfully'
+    };
+
+    canvasSrc = { src: body.src.split(' ').join('+') };
+
+    return respondJSONMeta(request, response, status);
+  }
+
+  canvasSrc = { src: body.src.split(' ').join('+') };
 
   return respondJSON(request, response, status, responseJSON);
 }
@@ -59,5 +102,6 @@ module.exports = {
   getFractalInfo,
   getPost,
   addPost,
+  savePost,
   notFound,
 };

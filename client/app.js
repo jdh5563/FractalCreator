@@ -21,6 +21,24 @@ const patternCtx = patternCanvas.getContext('2d');
 patternCanvas.width = canvasWidth;
 patternCanvas.height = canvasHeight;
 
+// https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload
+window.addEventListener('beforeunload', async function (e) {
+  console.log('Before Unload');
+  // the absence of a returnValue property on the event will guarantee the browser unload happens
+  const response = await fetch('/savePost', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'application/json',
+    },
+    body: `src=${patternCanvas.toDataURL()}`,
+  });
+
+  console.log(response.status);
+
+  delete e['returnValue'];
+});
+
 document.querySelector('#pause-button').onclick = (e) => {
   isPaused = !isPaused;
 
@@ -196,6 +214,8 @@ function init(json) {
   patternCtx.fillRect(0, 0, canvasWidth, canvasHeight);
   patternCtx.restore();
 
+  drawSavedCanvas();
+
   document.querySelector('#pause-button').textContent = 'Begin Drawing';
 
   if (!isPaused) {
@@ -332,6 +352,21 @@ function draw(randomVertex) {
   }
 
   if (!isControlHidden) drawControlPoints();
+}
+
+async function drawSavedCanvas(){
+  const response = await fetch('/getPost');
+  const responseJSON = await response.json();
+
+  if(responseJSON.src){
+    const canvasSrc = responseJSON.src;
+
+    const canvasImage = new Image();
+    canvasImage.onload = () => { 
+      if(canvasSrc) patternCtx.drawImage(canvasImage, 0, 0);
+    };
+    canvasImage.src = canvasSrc;
+  }
 }
 
 function drawControlPoints() {
