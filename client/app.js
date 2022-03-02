@@ -158,6 +158,19 @@ fractalOptionalRules[1].firstElementChild.addEventListener('change', () => {
   }
 });
 
+const optionalRulesSelections = { };
+const optionalRulesFunctions = {
+
+};
+
+for(let i = 2; i < fractalOptionalRules.length; i++){
+  fractalOptionalRules[i].firstElementChild.addEventListener('change', () => {
+    optionalRulesSelections[fractalOptionalRules[i].firstElementChild.id] ?
+      delete optionalRulesSelections[fractalOptionalRules[i].firstElementChild.id] :
+      optionalRulesSelections[fractalOptionalRules[i].firstElementChild.id] = fractalOptionalRules[i].firstElementChild;
+  })
+}
+
 const fractalSelect = document.querySelector('#fractal-select');
 fractalSelect.onchange = () => init(fractalInfo);
 
@@ -609,61 +622,135 @@ function customFractal() {
   let leftNeighbor;
 
   // TODO: This needs to be optimized A LOT
+  // for (let i = 0; i < jumpsPerFrame; i++) {
+  //   randomVertex = Math.floor(Math.random() * points.length);
+
+  //   for(let i = 2; i < fractalOptionalRules.length; i++){
+  //     const checkbox = fractalOptionalRules[i].firstElementChild;
+  //     if(checkbox.checked){
+  //       switch(checkbox.id){
+  //         case "no-same-twice":
+  //           if(randomVertex == previousVertices[0]){
+  //             canDraw = false;
+  //           }
+  //           break;
+  //         case "same-twice-no-one":
+  //           if(previousVertices[0] != previousVertices[1]) break;
+  //         case "no-distance-one":
+  //           const center = centerIsVertex ? points.pop() : null;
+  //           canDraw = checkNeighbors(randomVertex, 1);
+
+  //           if(center){
+  //             if(previousVertices[0] === points.length - 1){
+  //               canDraw = false;
+  //             }
+
+  //             points.push(center);
+  //           }
+  //           break;
+  //         case "same-twice-no-two":
+  //           if(previousVertices[0] != previousVertices[1]) break;
+  //         case "no-distance-two":
+  //           if(numSideSelect.value !== '3' || midpointsAreVertices){
+  //             const center = centerIsVertex ? points.pop() : null;
+
+  //             if(center){
+  //               rightNeighbor = (randomVertex - 1) % points.length;
+  //               leftNeighbor = (randomVertex + 1) % points.length;
+
+  //               if(previousVertices[0] !== points.length - 1 && previousVertices[0] !== leftNeighbor && previousVertices[0] !== rightNeighbor){
+  //                 canDraw = false;
+  //               }
+
+  //               points.push(center);
+  //             }
+  //             else{
+  //               canDraw = checkNeighbors(randomVertex, 2);
+  //             }
+  //           }
+  //           break;
+  //         case "same-twice-no-three":
+  //           if(previousVertices[0] != previousVertices[1]) break;
+  //         case "no-distance-three":
+  //           if(!centerIsVertex && (numSideSelect.value === '5' || midpointsAreVertices)){
+  //             canDraw = checkNeighbors(randomVertex, 3);
+  //           }
+  //           break;
+  //       }
+  //     }
+  //   }
+
+  function noSameTwice(randomVertex, previousVertex){
+    return !(randomVertex === previousVertex);
+  }
+
+  function noDistanceOne(randomVertex, previousVertex){
+    const center = centerIsVertex ? points.pop() : null;
+    canDraw = checkNeighbors(randomVertex, 1);
+
+    if(center){
+      if(previousVertex === points.length - 1){
+        canDraw = false;
+      }
+
+      points.push(center);
+    }
+  }
+
   for (let i = 0; i < jumpsPerFrame; i++) {
     randomVertex = Math.floor(Math.random() * points.length);
 
-    for(let i = 2; i < fractalOptionalRules.length; i++){
-      const checkbox = fractalOptionalRules[i].firstElementChild;
-      if(checkbox.checked){
-        switch(checkbox.id){
-          case "no-same-twice":
-            if(randomVertex == previousVertices[0]){
+    for(let key of Object.keys(optionalRulesSelections)){
+      const checkbox = optionalRulesSelections[key];
+      canDraw = optionalRulesFunctions[checkbox.id](parameters);
+      switch(checkbox.id){
+        case "no-same-twice":
+          if(randomVertex == previousVertices[0]){
+            canDraw = false;
+          }
+          break;
+        case "same-twice-no-one":
+          if(previousVertices[0] != previousVertices[1]) break;
+        case "no-distance-one":
+          const center = centerIsVertex ? points.pop() : null;
+          canDraw = checkNeighbors(randomVertex, 1);
+
+          if(center){
+            if(previousVertices[0] === points.length - 1){
               canDraw = false;
             }
-            break;
-          case "same-twice-no-one":
-            if(previousVertices[0] != previousVertices[1]) break;
-          case "no-distance-one":
+
+            points.push(center);
+          }
+          break;
+        case "same-twice-no-two":
+          if(previousVertices[0] != previousVertices[1]) break;
+        case "no-distance-two":
+          if(numSideSelect.value !== '3' || midpointsAreVertices){
             const center = centerIsVertex ? points.pop() : null;
-            canDraw = checkNeighbors(randomVertex, 1);
 
             if(center){
-              if(previousVertices[0] === points.length - 1){
+              rightNeighbor = (randomVertex - 1) % points.length;
+              leftNeighbor = (randomVertex + 1) % points.length;
+
+              if(previousVertices[0] !== points.length - 1 && previousVertices[0] !== leftNeighbor && previousVertices[0] !== rightNeighbor){
                 canDraw = false;
               }
 
               points.push(center);
             }
-            break;
-          case "same-twice-no-two":
-            if(previousVertices[0] != previousVertices[1]) break;
-          case "no-distance-two":
-            if(numSideSelect.value !== '3' || midpointsAreVertices){
-              const center = centerIsVertex ? points.pop() : null;
-
-              if(center){
-                rightNeighbor = (randomVertex - 1) % points.length;
-                leftNeighbor = (randomVertex + 1) % points.length;
-
-                if(previousVertices[0] !== points.length - 1 && previousVertices[0] !== leftNeighbor && previousVertices[0] !== rightNeighbor){
-                  canDraw = false;
-                }
-
-                points.push(center);
-              }
-              else{
-                canDraw = checkNeighbors(randomVertex, 2);
-              }
+            else{
+              canDraw = checkNeighbors(randomVertex, 2);
             }
-            break;
-          case "same-twice-no-three":
-            if(previousVertices[0] != previousVertices[1]) break;
-          case "no-distance-three":
-            if(!centerIsVertex && (numSideSelect.value === '5' || midpointsAreVertices)){
-              canDraw = checkNeighbors(randomVertex, 3);
-            }
-            break;
-        }
+          }
+          break;
+        case "same-twice-no-three":
+          if(previousVertices[0] != previousVertices[1]) break;
+        case "no-distance-three":
+          if(!centerIsVertex && (numSideSelect.value === '5' || midpointsAreVertices)){
+            canDraw = checkNeighbors(randomVertex, 3);
+          }
+          break;
       }
     }
 
