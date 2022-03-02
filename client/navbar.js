@@ -31,8 +31,8 @@ template.innerHTML = `
             </a>
 
             <input id="codeInput" class="input is-info is-light mt-3 mr-1" type="text" placeholder="Your User Code"></input>
-            <button id="codeButton" class="button is-info is-light mt-3 mx-1">Use Code</button>
-            <button id="new-code-button" class="button is-info is-light mt-3 mx-1">Create New Code</button>
+            <button id="codeButton" class="button is-success is-light mt-3 mx-1">Use Code</button>
+            <button id="new-code-button" class="button is-warning is-light mt-3 mx-1">Create New Code</button>
             <div id="code-notification" class="navbar-item notification is-light is-hidden ml-1"></div>
         </div>
     </div>
