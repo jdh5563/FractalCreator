@@ -22,6 +22,8 @@ const getFractalInfo = (request, response) => {
   respondJSON(request, response, 200, responseJSON);
 };
 
+const getFractalInfoMeta = (request, response) => respondJSONMeta(request, response, 200);
+
 const getPost = (request, response) => {
   if (canvasSrc) {
     return respondJSON(request, response, 200, canvasSrc);
@@ -29,6 +31,8 @@ const getPost = (request, response) => {
 
   return respondJSON(request, response, 200, { });
 };
+
+const getPostMeta = (request, response) => respondJSONMeta(request, response, 200);
 
 const addPost = (request, response, body) => {
   let status = 400;
@@ -94,13 +98,18 @@ const notFound = (request, response) => {
   return respondJSON(request, response, 404, responseJSON);
 };
 
+const notFoundMeta = (request, response) => respondJSONMeta(request, response, 404);
+
 // exports to set functions to public.
 // In this syntax, you can do getIndex:getIndex, but if they
 // are the same name, you can short handle to just getIndex,
 module.exports = {
   getFractalInfo,
+  getFractalInfoMeta,
   getPost,
+  getPostMeta,
   addPost,
   savePost,
   notFound,
+  notFoundMeta,
 };

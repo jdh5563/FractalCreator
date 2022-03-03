@@ -70,33 +70,43 @@ const handlePost = (request, response, parsedUrl) => {
 
 // Calls different functions depending on what was requested
 const urlStruct = {
-  '/': htmlHandler.getIndex,
-  '/about.html': htmlHandler.getIndex,
-  '/app.html': htmlHandler.getApp,
-  '/post.html': htmlHandler.getPost,
-  '/community.html': htmlHandler.getCommunity,
-  '/images/favicon.png': imageHandler.getFavicon,
-  '/images/my-name.png': imageHandler.getMyName,
-  '/images/sierpinski-spraypaint.png': imageHandler.getSierpinskiSpray,
-  '/images/sierpinski-triangle.png': imageHandler.getSierpinskiCrazy,
-  '/images/snowflake-pentagon.png': imageHandler.getSnowflakeSpray,
-  '/styles/style.css': cssHandler.getGlobalStyle,
-  '/styles/app.css': cssHandler.getAppStyle,
-  '/styles/about.css': cssHandler.getAboutStyle,
-  '/client/app.js': jsHandler.getApp,
-  '/client/post.js': jsHandler.getPost,
-  '/client/community.js': jsHandler.getCommunity,
-  '/client/firebase.js': jsHandler.getFirebase,
-  '/client/colorselect.js': jsHandler.getColorSelect,
-  '/client/utilities.js': jsHandler.getUtils,
-  '/client/navbar.js': jsHandler.getNavBar,
-  '/client/userpost.js': jsHandler.getUserPost,
-  '/fractalinfo.json': jsonHandler.getFractalInfo,
-  '/getPost': jsonHandler.getPost,
-  '/savePost': handlePost,
-  '/addPost': handlePost,
+  GET: {
+    '/': htmlHandler.getIndex,
+    '/about.html': htmlHandler.getIndex,
+    '/app.html': htmlHandler.getApp,
+    '/post.html': htmlHandler.getPost,
+    '/community.html': htmlHandler.getCommunity,
+    '/images/favicon.png': imageHandler.getFavicon,
+    '/images/my-name.png': imageHandler.getMyName,
+    '/images/sierpinski-spraypaint.png': imageHandler.getSierpinskiSpray,
+    '/images/sierpinski-triangle.png': imageHandler.getSierpinskiCrazy,
+    '/images/snowflake-pentagon.png': imageHandler.getSnowflakeSpray,
+    '/styles/style.css': cssHandler.getGlobalStyle,
+    '/styles/app.css': cssHandler.getAppStyle,
+    '/styles/about.css': cssHandler.getAboutStyle,
+    '/client/app.js': jsHandler.getApp,
+    '/client/post.js': jsHandler.getPost,
+    '/client/community.js': jsHandler.getCommunity,
+    '/client/firebase.js': jsHandler.getFirebase,
+    '/client/colorselect.js': jsHandler.getColorSelect,
+    '/client/utilities.js': jsHandler.getUtils,
+    '/client/navbar.js': jsHandler.getNavBar,
+    '/client/userpost.js': jsHandler.getUserPost,
+    '/fractalinfo.json': jsonHandler.getFractalInfo,
+    '/getPost': jsonHandler.getPost,
 
-  notFound: jsonHandler.notFound,
+    notFound: jsonHandler.notFound,
+  },
+  HEAD: {
+    '/fractalinfo.json': jsonHandler.getFractalInfoMeta,
+    '/getPost': jsonHandler.getPostMeta,
+
+    notFound: jsonHandler.notFoundMeta,
+  },
+  POST: {
+    '/savePost': handlePost,
+    '/addPost': handlePost,
+  },
 };
 
 // Handles requests from the server
@@ -104,7 +114,7 @@ const onRequest = (request, response) => {
   // Parse the url from the request
   const parsedURL = url.parse(request.url);
 
-  const func = urlStruct[parsedURL.pathname] || urlStruct.notFound;
+  const func = urlStruct[request.method][parsedURL.pathname] || urlStruct[request.method].notFound;
   func(request, response, parsedURL);
 };
 

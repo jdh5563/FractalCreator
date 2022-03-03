@@ -4,7 +4,12 @@ const title = document.querySelector('input');
 const content = document.querySelector('textarea');
 
 async function init(){
-    const response = await fetch('/getPost');
+    const response = await fetch('/getPost', {
+        method: 'get',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
     const responseJSON = await response.json();
     const canvasSrc = responseJSON.src;
 
@@ -29,7 +34,12 @@ async function init(){
 
     document.querySelector('#canvas-image').src = canvasSrc;
 
-    document.querySelector("#cancel-button").onclick = async () => await fetch('/app.html');
+    document.querySelector("#cancel-button").onclick = async () => await fetch('/app.html', {
+        method: 'get',
+        headers: {
+          'Accept': 'text/html',
+        },
+      });
 }
 
 init();
