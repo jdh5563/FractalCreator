@@ -3,6 +3,7 @@ import { firebaseInstance } from "./firebase.js";
 const title = document.querySelector('input');
 const content = document.querySelector('textarea');
 
+// Get the canvas screenshot that the user is posting and hook up button functionality
 async function init(){
     const response = await fetch('/getPost', {
         method: 'get',

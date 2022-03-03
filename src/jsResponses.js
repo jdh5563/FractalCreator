@@ -17,21 +17,18 @@ const getApp = (request, response) => {
   response.end();
 };
 
-// Writes the javascript into the response
 const getPost = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/javascript' });
   response.write(post);
   response.end();
 };
 
-// Writes the javascript into the response
 const getCommunity = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/javascript' });
   response.write(community);
   response.end();
 };
 
-// Writes the javascript into the response
 const getFirebase = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/javascript' });
   response.write(firebase);

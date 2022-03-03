@@ -15,25 +15,25 @@ const getFavicon = (request, response) => {
   response.end();
 };
 
+// Writes the images into the response
 const getMyName = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'image/png' });
   response.write(myName);
   response.end();
 };
 
-// Writes the favicon into the response
 const getSierpinskiSpray = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'image/png' });
   response.write(sierpinskiSpray);
   response.end();
 };
-// Writes the favicon into the response
+
 const getSierpinskiCrazy = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'image/png' });
   response.write(sierpinskiCrazy);
   response.end();
 };
-// Writes the favicon into the response
+
 const getSnowflakeSpray = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'image/png' });
   response.write(snowflakeSpray);

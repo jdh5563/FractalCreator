@@ -36,12 +36,15 @@ window.addEventListener('beforeunload', async function (e) {
   delete e['returnValue'];
 });
 
+// Set up pause button
 document.querySelector('#pause-button').onclick = (e) => {
   isPaused = !isPaused;
 
   if (isPaused) e.target.textContent = 'Resume Drawing';
   else e.target.textContent = 'Pause Drawing';
 };
+
+// Set up control point display button
 document.querySelector('#toggle-control-button').onclick = (e) => {
   isControlHidden = !isControlHidden;
 
@@ -53,6 +56,8 @@ document.querySelector('#toggle-control-button').onclick = (e) => {
     drawControlPoints();
   }
 };
+
+// Set up the reset buttons
 document.querySelector('#reset-button').onclick = () => init(fractalInfo);
 document.querySelector('#reset-control-button').onclick = () => resetControlPoints(fractalInfo);
 document.querySelector('#erase-pattern-button').onclick = () => {
@@ -63,6 +68,7 @@ document.querySelector('#erase-pattern-button').onclick = () => {
   previousVertices = [];
 };
 
+// Set up the post button
 document.querySelector('#post-button').addEventListener('click', async e => {
   // Create a POST request with the canvas screenshot in the body
   const tryAddPost = await fetch('/addPost', {
@@ -74,6 +80,7 @@ document.querySelector('#post-button').addEventListener('click', async e => {
     body: `src=${patternCanvas.toDataURL()}&hasUserCode=${firebaseInstance.getUserCode()}`,
   });
 
+  // Only redirect if the request was not bad. Notify the user of bad requests
   if(tryAddPost.status !== 400) location.href = '/post.html';
   else{
     const notification = document.querySelector('nav-bar').shadowRoot.querySelector('#code-notification');
@@ -104,6 +111,7 @@ let isControlHidden = false;
 let centerIsVertex = false;
 let midpointsAreVertices = false;
 
+// Set up the jump distance toggles
 const distanceText = document.querySelector('#distance-text');
 const distanceRange = document.querySelector('#distance-range');
 
@@ -115,6 +123,8 @@ distanceRange.onchange = () => jumpDistance = 1 / distanceText.value;
 
 const fractalOptionalRules = document.querySelector('#fractal-optional-rules').children;
 
+// The first 2 optional rule checkboxes are actually toggles, not rules
+// They will have their own change event listeners
 fractalOptionalRules[0].firstElementChild.addEventListener('change', () => {
   if(centerIsVertex){
     centerIsVertex = false;
@@ -159,10 +169,19 @@ fractalOptionalRules[1].firstElementChild.addEventListener('change', () => {
 });
 
 const optionalRulesSelections = { };
-const optionalRulesFunctions = {
 
+// Functions for each checkbox to call
+const optionalRulesFunctions = {
+  'no-same-twice': noSameTwice,
+  'no-distance-one': noDistanceOne,
+  'no-distance-two': noDistanceTwo,
+  'no-distance-three': noDistanceThree,
+  'same-twice-no-one': sameTwiceNoOne,
+  'same-twice-no-two': sameTwiceNoTwo,
+  'same-twice-no-three': sameTwiceNoThree,
 };
 
+// Add or remove a checkbox from our list of checked boxes depending on its current state
 for(let i = 2; i < fractalOptionalRules.length; i++){
   fractalOptionalRules[i].firstElementChild.addEventListener('change', () => {
     optionalRulesSelections[fractalOptionalRules[i].firstElementChild.id] ?
@@ -171,6 +190,7 @@ for(let i = 2; i < fractalOptionalRules.length; i++){
   })
 }
 
+// Set up the dropdown menus
 const fractalSelect = document.querySelector('#fractal-select');
 fractalSelect.onchange = () => init(fractalInfo);
 
@@ -189,6 +209,7 @@ numSideSelect.onchange = () => {
 
 const colorSelects = document.querySelector('#color-selects');
 
+// Drawing functions associated with each fractal
 const fractalFunctions = {
   'Sierpinski Triangle': triangleSierpinski,
   'Tic Tac Toe Square': squareTicTacToe,
@@ -202,8 +223,10 @@ const fractalFunctions = {
 //#endregion
 
 //#region Initialization / Reseting
+
+// Initialize the app with default settings
 function init(json) {
-  // Clear the points array
+  // Reset values
   points = [];
   previousVertices = [];
   tracePointOriginal = { x: Math.random() * (controlCanvas.width - 10), y: Math.random() * (controlCanvas.height - 10) };
@@ -232,10 +255,12 @@ function init(json) {
     isPaused = true;
   }
 
+  // Cancel the drawing loop if one is running
   cancelAnimationFrame(animationRequestID);
   fractalFunctions[fractalSelect.value]();
 }
 
+// Resets the control points to their default positions
 function resetControlPoints(json) {
   // Initialize the points array depending on the selected fractal
   let shape;
@@ -324,10 +349,14 @@ function resetControlPoints(json) {
   // Clear the canvas
   controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
+  // Recalculate the centroid of the shape
   calculatePolygonCentroid();
+
+  // Redraw the points
   drawControlPoints();
 }
 
+// Reset the list of colors
 function resetColorList(){
   colorSelects.replaceChildren();
   for (let i = 0; i < points.length; i++) {
@@ -342,6 +371,8 @@ function resetColorList(){
 //#endregion
 
 //#region Drawing things
+
+// Draw a point to the screen
 function draw(randomVertex) {
   if (!isPaused) {
     tracePoint = lerpVector(tracePoint, points[randomVertex], 1 / jumpDistance);
@@ -361,9 +392,12 @@ function draw(randomVertex) {
     patternCtx.restore();
   }
 
+  // Only draw the control points if they are turned on
   if (!isControlHidden) drawControlPoints();
 }
 
+// Try to fetch a saved state for the canvas.
+// Draw it to the canvas if it exists
 async function drawSavedCanvas(){
   const response = await fetch('/getPost', {
     method: 'get',
@@ -384,6 +418,7 @@ async function drawSavedCanvas(){
   }
 }
 
+// Draw the control points
 function drawControlPoints() {
   // Draw each of the attractors
   for (const point of points) {
@@ -432,6 +467,8 @@ function drawControlPoints() {
 //#endregion
 
 //#region Configuring control points
+
+// If the mouse is pressed down close to the center of one of the control points, grab it
 function grabControlPoint(e) {
   if ((e.offsetX > centerPoint.x - 5 && e.offsetX < centerPoint.x + 5)
     && (e.offsetY > centerPoint.y - 5 && e.offsetY < centerPoint.y + 5)) {
@@ -448,7 +485,9 @@ function grabControlPoint(e) {
   }
 }
 
+// Move the held control point, or the whole shape if the center is held
 function moveControlPoint(e) {
+  // Move the point or the whole shape if the center point is held
   if (heldPoint) {
     if (heldPoint == centerPoint) {
       for (const point of points) {
@@ -464,18 +503,23 @@ function moveControlPoint(e) {
     // Clear the canvas
     controlCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
+    // Recalculate the centroid after moving the point
     calculatePolygonCentroid();
 
+    // Only draw the control points if they are turned on
     if (!isControlHidden) drawControlPoints();
   }
 }
 
+// Drop the held control point when the mouse is released
 function dropControlPoint() {
   heldPoint = null;
 }
 //#endregion
 
 //#region Helper Functions
+
+// Calculate the centroid of the shape
 function calculatePolygonCentroid() {
   let centroidX = 0;
   let centroidY = 0;
@@ -487,6 +531,7 @@ function calculatePolygonCentroid() {
   centerPoint.y = centroidY / points.length;
 }
 
+// Check if the previous vertex is a vertex that is 'distance' vertices away from the current vertex
 function checkNeighbors(randomVertex, distance){
   const rightNeighbor = (randomVertex - distance) % points.length;
   const leftNeighbor = (randomVertex + distance) % points.length;
@@ -495,6 +540,80 @@ function checkNeighbors(randomVertex, distance){
     return false;
   }
 
+  return true;
+}
+
+// Check if the same vertex was chosen twice in a row
+function noSameTwice(randomVertex, previousVertex){
+  return !(randomVertex === previousVertex);
+}
+
+// Check if the previous vertex is 1 vertex away from the current vertex
+function noDistanceOne(randomVertex, previousVertex){
+  let distanceNotOne = true;
+  const center = centerIsVertex ? points.pop() : null;
+
+  distanceNotOne = checkNeighbors(randomVertex, 1);
+
+  if(center){
+    if(points[previousVertex] === center){
+      distanceNotOne = false;
+    }
+
+    points.push(center);
+  }
+
+  return distanceNotOne;
+}
+
+// Check if the previous vertex is 1 vertex away from the current vertex if the previous two vertices are the same
+function sameTwiceNoOne(randomVertex, previousVertex1, previousVertex2){
+  if(previousVertex1 === previousVertex2) return noDistanceOne(randomVertex, previousVertex1);
+  return true;
+}
+
+// Check if the previous vertex is 2 vertices away from the current vertex
+function noDistanceTwo(randomVertex, previousVertex){
+  let distanceNotTwo = false;
+  if(numSideSelect.value !== '3' || midpointsAreVertices){
+    const center = centerIsVertex ? points.pop() : null;
+
+    if(center){
+      const rightNeighbor = (randomVertex - 1) % points.length;
+      const leftNeighbor = (randomVertex + 1) % points.length;
+
+      if(points[previousVertex] !== center && previousVertex !== leftNeighbor && previousVertex !== rightNeighbor){
+        distanceNotTwo = false;
+      }
+
+      points.push(center);
+    }
+    else{
+      distanceNotTwo = checkNeighbors(randomVertex, 2);
+    }
+  }
+
+  return distanceNotTwo;
+}
+
+// Check if the previous vertex is 2 vertices away from the current vertex if the previous two vertices are the same
+function sameTwiceNoTwo(randomVertex, previousVertex1, previousVertex2){
+  if(previousVertex1 === previousVertex2) return noDistanceTwo(randomVertex, previousVertex1);
+  return true;
+}
+
+// Check if the previous vertex is 3 vertices away from the current vertex
+function noDistanceThree(randomVertex){
+  if(!centerIsVertex && (numSideSelect.value === '5' || midpointsAreVertices)){
+    return checkNeighbors(randomVertex, 3);
+  }
+
+  return true;
+}
+
+// Check if the previous vertex is 3 vertices away from the current vertex if the previous two vertices are the same
+function sameTwiceNoThree(randomVertex, previousVertex1, previousVertex2){
+  if(previousVertex1 === previousVertex2) return noDistanceThree(randomVertex);
   return true;
 }
 //#endregion
@@ -616,95 +735,19 @@ function squareWithT() {
 }
 // #endregion
 
-// #region Custom Fractals
+// #region Custom Fractal
 function customFractal() {
   animationRequestID = requestAnimationFrame(customFractal);
 
-  // TODO: Add functionality for all optional rules
   let canDraw = true;
   let randomVertex;
-  let rightNeighbor;
-  let leftNeighbor;
-
-  // TODO: This needs to be optimized A LOT
-
-  function noSameTwice(randomVertex, previousVertex){
-    return !(randomVertex === previousVertex);
-  }
-
-  // TODO: Handle 'same-twice-no-one'
-  function noDistanceOne(randomVertex, previousVertex){
-    let distanceNotOne = true;
-    const center = centerIsVertex ? points.pop() : null;
-
-    distanceNotOne = checkNeighbors(randomVertex, 1);
-
-    if(center){
-      if(points[previousVertex] === center){
-        distanceNotOne = false;
-      }
-
-      points.push(center);
-    }
-
-    return distanceNotOne;
-  }
 
   for (let i = 0; i < jumpsPerFrame; i++) {
     randomVertex = Math.floor(Math.random() * points.length);
 
     for(let key of Object.keys(optionalRulesSelections)){
       const checkbox = optionalRulesSelections[key];
-      canDraw = optionalRulesFunctions[checkbox.id](parameters);
-      switch(checkbox.id){
-        case "no-same-twice":
-          if(randomVertex == previousVertices[0]){
-            canDraw = false;
-          }
-          break;
-        case "same-twice-no-one":
-          if(previousVertices[0] != previousVertices[1]) break;
-        case "no-distance-one":
-          const center = centerIsVertex ? points.pop() : null;
-          canDraw = checkNeighbors(randomVertex, 1);
-
-          if(center){
-            if(previousVertices[0] === points.length - 1){
-              canDraw = false;
-            }
-
-            points.push(center);
-          }
-          break;
-        case "same-twice-no-two":
-          if(previousVertices[0] != previousVertices[1]) break;
-        case "no-distance-two":
-          if(numSideSelect.value !== '3' || midpointsAreVertices){
-            const center = centerIsVertex ? points.pop() : null;
-
-            if(center){
-              rightNeighbor = (randomVertex - 1) % points.length;
-              leftNeighbor = (randomVertex + 1) % points.length;
-
-              if(previousVertices[0] !== points.length - 1 && previousVertices[0] !== leftNeighbor && previousVertices[0] !== rightNeighbor){
-                canDraw = false;
-              }
-
-              points.push(center);
-            }
-            else{
-              canDraw = checkNeighbors(randomVertex, 2);
-            }
-          }
-          break;
-        case "same-twice-no-three":
-          if(previousVertices[0] != previousVertices[1]) break;
-        case "no-distance-three":
-          if(!centerIsVertex && (numSideSelect.value === '5' || midpointsAreVertices)){
-            canDraw = checkNeighbors(randomVertex, 3);
-          }
-          break;
-      }
+      canDraw = optionalRulesFunctions[checkbox.id](randomVertex, previousVertices[0], previousVertices[1]);
     }
 
     if(canDraw){

@@ -43,24 +43,29 @@ class FireBase {
         return path ? ref(this.#database, path) : ref(this.#database);
     }
 
+    // Return the user's code
     getUserCode(){
         return this.#userCode;
     }
 
+    // Set the user's code
     setUserCode(code){
         this.#userCode = code;
         localStorage.setItem(this.#codeKey, code);
     }
 
+    // Return the user's data
     getUserData(path){
         return get(this.getReference(path));
     }
 
+    // Create a post on firebase, then redirect to the community page after the post is uploaded
     createPost(title, content, canvasSrc){
         onValue(this.getReference(this.#userCode), () => location.href = '/community.html', { onlyOnce: true });
         push(this.getReference(this.#userCode + '/posts'), { title: title, content: content, canvasSrc: canvasSrc });
     }
 
+    // Create a new user code, then refresh the page
     createNewCode(){
         onValue(this.getReference(), () => location.reload(), { onlyOnce: true });
         this.setUserCode(push(this.getReference(), { })._path.pieces_[0]);
