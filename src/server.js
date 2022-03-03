@@ -34,8 +34,7 @@ const parseBody = (request, response, handler) => {
 const handlePost = (request, response, parsedUrl) => {
   if (parsedUrl.pathname === '/addPost') {
     parseBody(request, response, jsonHandler.addPost);
-  }
-  else if (parsedUrl.pathname === '/savePost') {
+  } else if (parsedUrl.pathname === '/savePost') {
     parseBody(request, response, jsonHandler.savePost);
   }
 };
